@@ -11,11 +11,11 @@ import (
 var _ = Describe("given ToCliFlagArray", func() {
 	Context("when called with a []pcli.Flag", func() {
 		controlFlags := []pcli.Flag{
-			pcli.StringFlag{Name: "blahstring"},
-			pcli.StringSliceFlag{Name: "blahslice"},
-			pcli.IntFlag{Name: "blahint"},
-			pcli.BoolFlag{Name: "blahbool"},
-			pcli.BoolTFlag{Name: "blahboolt"},
+			pcli.Flag{FlagType: pcli.StringFlag, Name: "blahstring"},
+			pcli.Flag{FlagType: pcli.StringSliceFlag, Name: "blahslice"},
+			pcli.Flag{FlagType: pcli.IntFlag, Name: "blahint"},
+			pcli.Flag{FlagType: pcli.BoolFlag, Name: "blahbool"},
+			pcli.Flag{FlagType: pcli.BoolTFlag, Name: "blahboolt"},
 		}
 		It("then it should convert to a []cli.Flag", func() {
 			cliFlags := ToCliFlagArray(controlFlags)

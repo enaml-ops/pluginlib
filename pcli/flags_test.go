@@ -9,11 +9,11 @@ import (
 var _ = Describe("Given CLI flags", func() {
 	Describe("given a new string slice flag", func() {
 		Context("when there is a non empty stringslice value", func() {
-			var ss StringSliceFlag
+			var ss Flag
 			var controlString = "blah"
 			BeforeEach(func() {
-				ss = StringSliceFlag{}
-				ss.Value = []string{controlString}
+				ss = Flag{FlagType: StringSliceFlag}
+				ss.Value = controlString
 			})
 			It("then it should set the default value string on the returned interface", func() {
 				rval := ss.ToCli().(cli.StringSliceFlag)
@@ -21,9 +21,9 @@ var _ = Describe("Given CLI flags", func() {
 			})
 		})
 		Context("when there is not a value", func() {
-			var ss StringSliceFlag
+			var ss Flag
 			BeforeEach(func() {
-				ss = StringSliceFlag{}
+				ss = Flag{FlagType: StringSliceFlag}
 			})
 			It("then it should leave the Value empty on the returned type", func() {
 				rval := ss.ToCli().(cli.StringSliceFlag)

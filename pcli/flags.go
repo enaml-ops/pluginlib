@@ -1,46 +1,57 @@
 package pcli
 
 import (
-	"strings"
+	"strconv"
 
 	"github.com/codegangsta/cli"
+	"github.com/xchapter7x/lo"
+)
+
+type FlagType int
+
+const (
+	StringFlag FlagType = iota
+	StringSliceFlag
+	BoolFlag
+	IntFlag
+	BoolTFlag
 )
 
 type (
-	Flag interface {
-		ToCli() interface{}
-	}
-	StringFlag struct {
-		Name   string
-		Usage  string
-		EnvVar string
-		Value  string
-	}
-	StringSliceFlag struct {
-		Name   string
-		Usage  string
-		EnvVar string
-		Value  []string
-	}
-	BoolFlag struct {
-		Name   string
-		Usage  string
-		EnvVar string
-	}
-	IntFlag struct {
-		Name   string
-		Usage  string
-		EnvVar string
-		Value  int
-	}
-	BoolTFlag struct {
-		Name   string
-		Usage  string
-		EnvVar string
+	Flag struct {
+		Name     string
+		Usage    string
+		EnvVar   string
+		Value    string
+		FlagType FlagType
 	}
 )
 
-func (s StringFlag) ToCli() interface{} {
+func (s Flag) ToCli() interface{} {
+	var ret interface{}
+	switch s.FlagType {
+	case StringFlag:
+		ret = StringFlagToCli(s)
+
+	case StringSliceFlag:
+		ret = StringSliceFlagToCli(s)
+
+	case BoolFlag:
+		ret = BoolFlagToCli(s)
+
+	case BoolTFlag:
+		ret = BoolTFlagToCli(s)
+
+	case IntFlag:
+		ret = IntFlagToCli(s)
+
+	default:
+		lo.G.Error("not sure how to handle this type")
+	}
+	return ret
+}
+
+func StringFlagToCli(s Flag) interface{} {
 	return cli.StringFlag{
 		Name:   s.Name,
 		EnvVar: s.EnvVar,
@@ -49,7 +60,7 @@ func (s StringFlag) ToCli() interface{} {
 	}
 }
 
-func (s StringSliceFlag) ToCli() interface{} {
+func StringSliceFlagToCli(s Flag) interface{} {
 
 	res := cli.StringSliceFlag{
 		Name:   s.Name,
@@ -57,13 +68,13 @@ func (s StringSliceFlag) ToCli() interface{} {
 		Value:  &cli.StringSlice{},
 		Usage:  s.Usage,
 	}
-	if len(s.Value) > 0 {
-		res.Value.Set(strings.Join(s.Value, ","))
+	if s.Value != "" {
+		res.Value.Set(s.Value)
 	}
 	return res
 }
 
-func (s BoolFlag) ToCli() interface{} {
+func BoolFlagToCli(s Flag) interface{} {
 
 	return cli.BoolFlag{
 		Name:   s.Name,
@@ -72,17 +83,17 @@ func (s BoolFlag) ToCli() interface{} {
 	}
 }
 
-func (s IntFlag) ToCli() interface{} {
-
+func IntFlagToCli(s Flag) interface{} {
+	intVal, _ := strconv.Atoi(s.Value)
 	return cli.IntFlag{
 		Name:   s.Name,
 		EnvVar: s.EnvVar,
-		Value:  s.Value,
+		Value:  intVal,
 		Usage:  s.Usage,
 	}
 }
 
-func (s BoolTFlag) ToCli() interface{} {
+func BoolTFlagToCli(s Flag) interface{} {
 
 	return cli.BoolTFlag{
 		Name:   s.Name,
