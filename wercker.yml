@@ -1,0 +1,42 @@
+box: golang
+build:
+  steps:
+    - setup-go-workspace
+
+    # Gets the dependencies
+    - script:
+        name: go get
+        code: |
+          cd $WERCKER_SOURCE_DIR
+          go version
+          go get github.com/Masterminds/glide
+          export PATH=$WERCKER_SOURCE_DIR/bin:$PATH
+          glide --version
+          glide install
+
+    - script:
+        name: generate fixture test plugins
+        code: |
+          rm registry/fixtures/cloudconfig/.keep
+          rm registry/fixtures/product/.keep
+          GOOS=linux ./createRegistryFixturePlugin
+
+    # Test the project
+    - script:
+        name: go test
+        code: |
+          LOG_LEVEL=debug go test $(glide novendor) -v -cover -race
+
+    - script:
+        name: add repo to artifact
+        code: |
+          cp -R ./ ${WERCKER_OUTPUT_DIR}
+
+  after-steps:
+    - slack-notifier:
+        url: $SLACK_URL
+        channel: enaml
+        username: robo-enaml
+        notify_on: failed
+        branch: master
+

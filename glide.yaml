@@ -1,0 +1,8 @@
+package: github.com/enaml-ops/pluginlib
+import:
+- package: github.com/codegangsta/cli
+- package: github.com/hashicorp/go-plugin
+- package: github.com/xchapter7x/lo
+- package: github.com/onsi/ginkgo
+- package: github.com/onsi/gomega
+- package: gopkg.in/yaml.v2

@@ -1,0 +1,27 @@
+hash: 437421a75a473b7bd59eedfa4cacd11208aefe2b3fa30cf9406c386b7cdc2e89
+updated: 2016-07-20T11:25:31.301942988-04:00
+imports:
+- name: github.com/codegangsta/cli
+  version: 11c134509d89c2018675f369955218a180dc7428
+- name: github.com/enaml-ops/pluginlib
+  version: 508400f057dcb6aa68b45d75771f662cc39737c1
+  subpackages:
+  - cloudconfig
+  - pcli
+  - product
+  - util
+- name: github.com/hashicorp/go-plugin
+  version: 8cf118f7a2f0c7ef1c82f66d4f6ac77c7e27dc12
+- name: github.com/hashicorp/yamux
+  version: badf81fca035b8ebac61b5ab83330b72541056f4
+- name: github.com/onsi/ginkgo
+  version: 7d3240191d7b2311b60090fcbc96e56bffc45ec0
+- name: github.com/onsi/gomega
+  version: 9ed8da19f2156b87a803a8fdf6d126f627a12db1
+- name: github.com/op/go-logging
+  version: 970db520ece77730c7e4724c61121037378659d9
+- name: github.com/xchapter7x/lo
+  version: aa2602d0e8e8647f0ce7b53109b37040941915aa
+- name: gopkg.in/yaml.v2
+  version: e4d366fc3c7938e2958e662b4258c7a89e1f0e3e
+devImports: []

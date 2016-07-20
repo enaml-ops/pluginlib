@@ -1,0 +1,7 @@
+#GOOS=linux go build -o pluginlib/registry/fixtures/cloudconfig/testplugin-linux pluginlib/cloudconfig/example/testconfig.go && chmod +x pluginlib/registry/fixtures/cloudconfig/testplugin-linux
+#GOOS=darwin go build -o pluginlib/registry/fixtures/cloudconfig/testplugin-darwin pluginlib/cloudconfig/example/testconfig.go && chmod +x pluginlib/registry/fixtures/cloudconfig/testplugin-darwin
+#GOOS=linux go build -o pluginlib/registry/fixtures/product/testproductplugin-linux pluginlib/product/example/testconfig.go && chmod +x pluginlib/registry/fixtures/product/testproductplugin-linux
+#GOOS=darwin go build -o pluginlib/registry/fixtures/product/testproductplugin-darwin pluginlib/product/example/testconfig.go && chmod +x pluginlib/registry/fixtures/product/testproductplugin-darwin
+go build -o registry/fixtures/cloudconfig/testplugin-${GOOS} cloudconfig/example/testconfig.go && chmod +x registry/fixtures/cloudconfig/testplugin-${GOOS}
+go build -o registry/fixtures/product/testproductplugin-${GOOS} product/example/testconfig.go && chmod +x registry/fixtures/product/testproductplugin-${GOOS}
+
