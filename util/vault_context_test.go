@@ -1,6 +1,7 @@
 package pluginutil_test
 
 import (
+	"io/ioutil"
 	"net/http"
 	"os"
 
@@ -10,9 +11,46 @@ import (
 	"github.com/enaml-ops/pluginlib/util/utilfakes"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"github.com/onsi/gomega/ghttp"
 )
 
 var _ = Describe("given: a VaultOverlay", func() {
+	Describe("given a defaultclient", func() {
+		var server *ghttp.Server
+		var vault VaultUnmarshaler
+
+		BeforeEach(func() {
+			b, _ := ioutil.ReadFile("fixtures/vault.json")
+			server = ghttp.NewServer()
+			server.AppendHandlers(
+				ghttp.CombineHandlers(
+					ghttp.RespondWith(http.StatusOK, string(b)),
+				),
+			)
+			vault = NewVaultUnmarshal(server.URL(), "lkjaslkdjflkasjdf", DefaultClient())
+		})
+
+		AfterEach(func() {
+			server.Close()
+		})
+
+		Context("when calling unmarshalflags on a context that was not given the flag value from the cli", func() {
+			var ctx *cli.Context
+
+			BeforeEach(func() {
+				flgs := []pcli.Flag{
+					pcli.Flag{FlagType: pcli.StringFlag, Name: "knock"},
+				}
+				vault.UnmarshalFlags("secret/move-along-nothing-to-see-here", flgs)
+				ctx = NewContext([]string{"mycoolapp"}, ToCliFlagArray(flgs))
+			})
+
+			It("should set the value in the flag using the given vault hash", func() {
+				Ω(ctx.String("knock")).Should(Equal("knocks"))
+			})
+		})
+	})
+
 	Describe("given a properly initialized vaultoverlay targeting a vault", func() {
 		var vault VaultUnmarshaler
 

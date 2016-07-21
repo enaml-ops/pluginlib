@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/enaml-ops/pluginlib/pcli"
+	"github.com/xchapter7x/lo"
 )
 
 type VaultUnmarshaler interface {
@@ -47,11 +48,14 @@ func (s *VaultUnmarshal) UnmarshalFlags(hash string, flgs []pcli.Flag) (err erro
 	json.Unmarshal(b, vaultObj)
 
 	for hashFromVault, valueFromVault := range vaultObj.Data {
+		lo.G.Debug("checking for matching flag: ", hashFromVault)
 
 		for idx, flg := range flgs {
 
 			if hashFromVault == flg.Name {
+				lo.G.Debugf("setting matching flag: %s - %s", hashFromVault, flg.Name)
 				flgs[idx].Value = valueFromVault
+				lo.G.Debug("flag value set: ", valueFromVault)
 			}
 		}
 	}
