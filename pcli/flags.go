@@ -2,6 +2,7 @@ package pcli
 
 import (
 	"strconv"
+	"strings"
 
 	"github.com/codegangsta/cli"
 	"github.com/xchapter7x/lo"
@@ -61,15 +62,17 @@ func StringFlagToCli(s Flag) interface{} {
 }
 
 func StringSliceFlagToCli(s Flag) interface{} {
+	var stringSlice *cli.StringSlice = &cli.StringSlice{}
+
+	if s.Value != "" {
+		*stringSlice = strings.Split(s.Value, ",")
+	}
 
 	res := cli.StringSliceFlag{
 		Name:   s.Name,
 		EnvVar: s.EnvVar,
-		Value:  &cli.StringSlice{},
+		Value:  stringSlice,
 		Usage:  s.Usage,
-	}
-	if s.Value != "" {
-		res.Value.Set(s.Value)
 	}
 	return res
 }

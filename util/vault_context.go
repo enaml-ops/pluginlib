@@ -6,14 +6,12 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"strings"
 
-	"github.com/codegangsta/cli"
-	"github.com/xchapter7x/lo"
+	"github.com/enaml-ops/pluginlib/pcli"
 )
 
 type VaultUnmarshaler interface {
-	UnmarshalFlags(hash string, flgs []cli.Flag) (err error)
+	UnmarshalFlags(hash string, flgs []pcli.Flag) (err error)
 }
 
 type Doer interface {
@@ -43,7 +41,7 @@ type VaultJsonObject struct {
 	Auth          interface{}       `json:"auth"`
 }
 
-func (s *VaultUnmarshal) UnmarshalFlags(hash string, flgs []cli.Flag) (err error) {
+func (s *VaultUnmarshal) UnmarshalFlags(hash string, flgs []pcli.Flag) (err error) {
 	b := s.getVaultHashValues(hash)
 	vaultObj := new(VaultJsonObject)
 	json.Unmarshal(b, vaultObj)
@@ -52,37 +50,10 @@ func (s *VaultUnmarshal) UnmarshalFlags(hash string, flgs []cli.Flag) (err error
 
 		for idx, flg := range flgs {
 
-			if hashFromVault == flg.GetName() {
-				flgs[idx] = setEnvVarAndValue(flg, valueFromVault)
+			if hashFromVault == flg.Name {
+				flgs[idx].Value = valueFromVault
 			}
 		}
-	}
-	return
-}
-
-func setEnvVarAndValue(f cli.Flag, v string) (rflg cli.Flag) {
-	switch ft := f.(type) {
-
-	case cli.StringSliceFlag:
-		ft.EnvVar = v
-		slice := splitAndTrim(v)
-		ft.Value = &slice
-		rflg = ft
-
-	case cli.StringFlag:
-		ft.EnvVar = v
-		ft.Value = v
-		rflg = ft
-
-	default:
-		lo.G.Panic("i dont know what field this is in VAULT. exiting the app now")
-	}
-	return
-}
-
-func splitAndTrim(v string) (slice cli.StringSlice) {
-	for _, sv := range strings.Split(v, ",") {
-		slice = append(slice, strings.TrimSpace(sv))
 	}
 	return
 }

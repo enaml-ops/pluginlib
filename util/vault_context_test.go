@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/codegangsta/cli"
+	"github.com/enaml-ops/pluginlib/pcli"
 	. "github.com/enaml-ops/pluginlib/util"
 	"github.com/enaml-ops/pluginlib/util/utilfakes"
 	. "github.com/onsi/ginkgo"
@@ -28,11 +29,11 @@ var _ = Describe("given: a VaultOverlay", func() {
 			var ctx *cli.Context
 
 			BeforeEach(func() {
-				flgs := []cli.Flag{
-					cli.StringFlag{Name: "knock"},
+				flgs := []pcli.Flag{
+					pcli.Flag{FlagType: pcli.StringFlag, Name: "knock"},
 				}
 				vault.UnmarshalFlags("secret/move-along-nothing-to-see-here", flgs)
-				ctx = NewContext([]string{"mycoolapp"}, flgs)
+				ctx = NewContext([]string{"mycoolapp"}, ToCliFlagArray(flgs))
 			})
 
 			It("should set the value in the flag using the given vault hash", func() {
@@ -44,11 +45,11 @@ var _ = Describe("given: a VaultOverlay", func() {
 			var ctx *cli.Context
 
 			BeforeEach(func() {
-				flgs := []cli.Flag{
-					cli.StringFlag{Name: "knock"},
+				flgs := []pcli.Flag{
+					pcli.Flag{FlagType: pcli.StringFlag, Name: "knock"},
 				}
 				vault.UnmarshalFlags("secret/move-along-nothing-to-see-here", flgs)
-				ctx = NewContext([]string{"mycoolapp", "--knock", "something-different"}, flgs)
+				ctx = NewContext([]string{"mycoolapp", "--knock", "something-different"}, ToCliFlagArray(flgs))
 			})
 
 			It("should overwrite the default vault value with the cli flag value given", func() {
@@ -68,12 +69,12 @@ var _ = Describe("given: a VaultOverlay", func() {
 					Body: b,
 				}, nil)
 				vault = NewVaultUnmarshal("domain.com", "my-really-long-token", doer)
-				flgs := []cli.Flag{
-					cli.StringSliceFlag{Name: "knock-slice"},
-					cli.StringFlag{Name: "stuff"},
+				flgs := []pcli.Flag{
+					pcli.Flag{FlagType: pcli.StringSliceFlag, Name: "knock-slice"},
+					pcli.Flag{FlagType: pcli.StringFlag, Name: "stuff"},
 				}
 				vault.UnmarshalFlags("secret/move-along-nothing-to-see-here", flgs)
-				ctx = NewContext([]string{"mycoolapp", "--stuff", "with-val"}, flgs)
+				ctx = NewContext([]string{"mycoolapp", "--stuff", "with-val"}, ToCliFlagArray(flgs))
 			})
 
 			It("should overwrite the value in the flag using the given vault hash", func() {
@@ -85,11 +86,11 @@ var _ = Describe("given: a VaultOverlay", func() {
 			var ctx *cli.Context
 
 			BeforeEach(func() {
-				flgs := []cli.Flag{
-					cli.StringFlag{Name: "badda"},
+				flgs := []pcli.Flag{
+					pcli.Flag{FlagType: pcli.StringFlag, Name: "badda"},
 				}
 				vault.UnmarshalFlags("secret/move-along-nothing-to-see-here", flgs)
-				ctx = NewContext([]string{"mycoolapp"}, flgs)
+				ctx = NewContext([]string{"mycoolapp"}, ToCliFlagArray(flgs))
 			})
 
 			It("then it should not set or create the flag in the context", func() {
