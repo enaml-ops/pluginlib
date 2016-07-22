@@ -1,15 +1,21 @@
-hash: 437421a75a473b7bd59eedfa4cacd11208aefe2b3fa30cf9406c386b7cdc2e89
-updated: 2016-07-20T11:25:31.301942988-04:00
+hash: 0e88db0e93bd846f72b297f56dde8c67f4539ebb843617871239e359067d9ece
+updated: 2016-07-22T14:52:57.985794821-04:00
 imports:
 - name: github.com/codegangsta/cli
   version: 11c134509d89c2018675f369955218a180dc7428
+- name: github.com/enaml-ops/enaml
+  version: 90d2b64b26292f25847fdf9d3d9ee4a191e331e9
 - name: github.com/enaml-ops/pluginlib
-  version: 508400f057dcb6aa68b45d75771f662cc39737c1
+  version: 496a4d33a5a81bc1baa107d80827d656cedd1fb3
   subpackages:
   - cloudconfig
   - pcli
   - product
   - util
+- name: github.com/golang/protobuf
+  version: 874264fbbb43f4d91e999fecb4b40143ed611400
+  subpackages:
+  - proto
 - name: github.com/hashicorp/go-plugin
   version: 8cf118f7a2f0c7ef1c82f66d4f6ac77c7e27dc12
 - name: github.com/hashicorp/yamux

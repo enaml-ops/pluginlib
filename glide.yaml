@@ -6,3 +6,7 @@ import:
 - package: github.com/onsi/ginkgo
 - package: github.com/onsi/gomega
 - package: gopkg.in/yaml.v2
+- package: github.com/enaml-ops/enaml
+- package: github.com/golang/protobuf
+  subpackages:
+  - proto
