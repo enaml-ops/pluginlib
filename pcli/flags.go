@@ -29,6 +29,11 @@ type (
 )
 
 func (s Flag) ToCli() interface{} {
+
+	if s.EnvVar == "" {
+		s.EnvVar = createEnvVar(s.Name)
+	}
+
 	var ret interface{}
 	switch s.FlagType {
 	case StringFlag:
@@ -50,6 +55,10 @@ func (s Flag) ToCli() interface{} {
 		lo.G.Error("not sure how to handle this type")
 	}
 	return ret
+}
+
+func createEnvVar(flagname string) string {
+	return "OMG_" + strings.Replace(strings.ToUpper(flagname), "-", "_", -1)
 }
 
 func StringFlagToCli(s Flag) interface{} {

@@ -7,6 +7,32 @@ import (
 )
 
 var _ = Describe("Given CLI flags", func() {
+	Describe("given a Flag", func() {
+		var flg Flag
+		var flagname = "hi-there-flag"
+
+		Context("when: calling tocli and there is not a envvar value set", func() {
+			BeforeEach(func() {
+				flg = Flag{FlagType: StringFlag, Name: flagname}
+			})
+			It("then it should automatically set the env var", func() {
+				Ω(flg.ToCli().(cli.StringFlag).EnvVar).ShouldNot(BeEmpty())
+				Ω(flg.ToCli().(cli.StringFlag).EnvVar).Should(Equal("OMG_HI_THERE_FLAG"))
+			})
+		})
+
+		Context("when: calling tocli and there is a envvar value already set", func() {
+			var control = "bleh"
+			BeforeEach(func() {
+				flg = Flag{FlagType: StringFlag, Name: flagname, EnvVar: control}
+			})
+			It("then it should use that", func() {
+				Ω(flg.ToCli().(cli.StringFlag).EnvVar).ShouldNot(BeEmpty())
+				Ω(flg.ToCli().(cli.StringFlag).EnvVar).Should(Equal(control))
+			})
+		})
+	})
+
 	Describe("given a new string slice flag", func() {
 		Context("when there is a non empty stringslice value", func() {
 			var ss Flag
