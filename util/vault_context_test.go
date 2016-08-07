@@ -14,7 +14,69 @@ import (
 	"github.com/onsi/gomega/ghttp"
 )
 
-var _ = Describe("given: a VaultOverlay", func() {
+var _ = Describe("given: a VaultUnmarshal", func() {
+
+	Context("when not properly initialized and targetted or bad call", func() {
+		Describe("given rotate secrets", func() {
+			var server *ghttp.Server
+			var vault VaultRotater
+
+			BeforeEach(func() {
+				b, _ := ioutil.ReadFile("fixtures/vault.json")
+				server = ghttp.NewServer()
+				server.AppendHandlers(
+					ghttp.CombineHandlers(
+						ghttp.RespondWith(http.StatusBadRequest, string(b)),
+					),
+				)
+				vault = NewVaultUnmarshal(server.URL(), "lkjaslkdjflkasjdf", DefaultClient())
+			})
+
+			AfterEach(func() {
+				server.Close()
+			})
+			Context("when called with a vault hash", func() {
+				var err error
+				BeforeEach(func() {
+					err = vault.RotateSecrets("secret/move-along-secret", nil)
+				})
+				It("then it should yield an error", func() {
+					Ω(err).Should(HaveOccurred())
+				})
+			})
+		})
+	})
+	Context("when properly initialized and targetted", func() {
+		Describe("given rotate secrets", func() {
+			var server *ghttp.Server
+			var vault VaultRotater
+
+			BeforeEach(func() {
+				b, _ := ioutil.ReadFile("fixtures/vault.json")
+				server = ghttp.NewServer()
+				server.AppendHandlers(
+					ghttp.CombineHandlers(
+						ghttp.RespondWith(http.StatusOK, string(b)),
+					),
+				)
+				vault = NewVaultUnmarshal(server.URL(), "lkjaslkdjflkasjdf", DefaultClient())
+			})
+
+			AfterEach(func() {
+				server.Close()
+			})
+			Context("when called with a vault hash", func() {
+				var err error
+				BeforeEach(func() {
+					err = vault.RotateSecrets("secret/move-along-secret", nil)
+				})
+				It("then it should populate the given vault hash with the given secrets", func() {
+					Ω(err).ShouldNot(HaveOccurred())
+				})
+			})
+		})
+	})
+
 	Describe("given a defaultclient", func() {
 		var server *ghttp.Server
 		var vault VaultUnmarshaler

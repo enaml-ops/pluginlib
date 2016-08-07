@@ -1,6 +1,7 @@
 package pluginutil
 
 import (
+	"bytes"
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
@@ -15,11 +16,15 @@ type VaultUnmarshaler interface {
 	UnmarshalFlags(hash string, flgs []pcli.Flag) (err error)
 }
 
+type VaultRotater interface {
+	RotateSecrets(hash string, secrets interface{}) error
+}
+
 type Doer interface {
 	Do(*http.Request) (*http.Response, error)
 }
 
-func NewVaultUnmarshal(domain, token string, client Doer) VaultUnmarshaler {
+func NewVaultUnmarshal(domain, token string, client Doer) *VaultUnmarshal {
 	return &VaultUnmarshal{
 		Domain: domain,
 		Token:  token,
@@ -42,6 +47,12 @@ type VaultJsonObject struct {
 	Auth          interface{}       `json:"auth"`
 }
 
+func (s *VaultUnmarshal) RotateSecrets(hash string, secrets interface{}) (err error) {
+	var b []byte
+	b, err = json.Marshal(secrets)
+	return s.setVaultHashValues(hash, b)
+}
+
 func (s *VaultUnmarshal) UnmarshalFlags(hash string, flgs []pcli.Flag) (err error) {
 	b := s.getVaultHashValues(hash)
 	vaultObj := new(VaultJsonObject)
@@ -60,6 +71,37 @@ func (s *VaultUnmarshal) UnmarshalFlags(hash string, flgs []pcli.Flag) (err erro
 		}
 	}
 	return
+}
+
+func (s *VaultUnmarshal) setVaultHashValues(hash string, body []byte) error {
+	var err error
+	var req *http.Request
+	var res *http.Response
+	var b []byte
+
+	if req, err = http.NewRequest("POST", fmt.Sprintf("%s/v1/%s", s.Domain, hash), bytes.NewBuffer(body)); err != nil {
+		lo.G.Errorf("error in vault request %v", err)
+
+	} else {
+		req.Header.Set("Content-Type", "application/json")
+		s.decorateWithToken(req)
+
+		if res, err = s.Client.Do(req); err != nil {
+			lo.G.Errorf("error calling client %v", err)
+
+		} else if res.StatusCode != http.StatusOK {
+			err = fmt.Errorf("status code is not ok: %v", res.StatusCode)
+			lo.G.Error(err.Error())
+
+		} else {
+
+			if b, err = ioutil.ReadAll(res.Body); err != nil {
+				lo.G.Errorf("error in reading response %v", err)
+			}
+			lo.G.Debugf("vault res: %v", string(b))
+		}
+	}
+	return err
 }
 
 func (s *VaultUnmarshal) getVaultHashValues(hash string) []byte {
