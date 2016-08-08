@@ -48,9 +48,7 @@ type VaultJsonObject struct {
 }
 
 func (s *VaultUnmarshal) RotateSecrets(hash string, secrets interface{}) (err error) {
-	var b []byte
-	b, err = json.Marshal(secrets)
-	return s.setVaultHashValues(hash, b)
+	return s.setVaultHashValues(hash, secrets.([]byte))
 }
 
 func (s *VaultUnmarshal) UnmarshalFlags(hash string, flgs []pcli.Flag) (err error) {
@@ -89,7 +87,7 @@ func (s *VaultUnmarshal) setVaultHashValues(hash string, body []byte) error {
 		if res, err = s.Client.Do(req); err != nil {
 			lo.G.Errorf("error calling client %v", err)
 
-		} else if res.StatusCode != http.StatusOK || res.StatusCode == http.StatusNoContent {
+		} else if res.StatusCode != http.StatusOK && res.StatusCode != http.StatusNoContent {
 			err = fmt.Errorf("status code is not ok: %v", res.StatusCode)
 			lo.G.Error(err.Error())
 

@@ -38,7 +38,7 @@ var _ = Describe("given: a VaultUnmarshal", func() {
 			Context("when called with a vault hash", func() {
 				var err error
 				BeforeEach(func() {
-					err = vault.RotateSecrets("secret/move-along-secret", nil)
+					err = vault.RotateSecrets("secret/move-along-secret", []byte(``))
 				})
 				It("then it should yield an error", func() {
 					Ω(err).Should(HaveOccurred())
@@ -68,7 +68,7 @@ var _ = Describe("given: a VaultUnmarshal", func() {
 			Context("when called with a vault hash", func() {
 				var err error
 				BeforeEach(func() {
-					err = vault.RotateSecrets("secret/move-along-secret", nil)
+					err = vault.RotateSecrets("secret/move-along-secret", []byte(``))
 				})
 				It("then it should populate the given vault hash with the given secrets", func() {
 					Ω(err).ShouldNot(HaveOccurred())
