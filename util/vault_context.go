@@ -56,19 +56,14 @@ func (s *VaultUnmarshal) UnmarshalFlags(hash string, flgs []pcli.Flag) (err erro
 	vaultObj := new(VaultJsonObject)
 	json.Unmarshal(b, vaultObj)
 
-	for hashFromVault, valueFromVault := range vaultObj.Data {
-		lo.G.Debug("checking for matching flag: ", hashFromVault)
-
-		for idx, flg := range flgs {
-
-			if hashFromVault == flg.Name {
-				lo.G.Debugf("setting matching flag: %s - %s", hashFromVault, flg.Name)
-				flgs[idx].Value = valueFromVault
-				lo.G.Debug("flag value set: ", valueFromVault)
-			}
+	for i := range flgs {
+		flagName := flgs[i].Name
+		if vaultValue, ok := vaultObj.Data[flagName]; ok {
+			flgs[i].Value = vaultValue
+			lo.G.Debugf("set %s flag from vault (value=%s)", flagName, vaultValue)
 		}
 	}
-	return
+	return nil
 }
 
 func (s *VaultUnmarshal) setVaultHashValues(hash string, body []byte) error {
