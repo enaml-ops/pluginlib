@@ -26,7 +26,7 @@ var _ = Describe("given vault context", func() {
 						ghttp.RespondWith(http.StatusBadRequest, b),
 					),
 				)
-				vault = NewVaultUnmarshal(server.URL(), "lkjaslkdjflkasjdf", DefaultClient())
+				vault = NewVaultUnmarshal(server.URL(), "lkjaslkdjflkasjdf")
 			})
 
 			AfterEach(func() {
@@ -58,7 +58,7 @@ var _ = Describe("given vault context", func() {
 						ghttp.RespondWith(http.StatusOK, b),
 					),
 				)
-				vault = NewVaultUnmarshal(server.URL(), "lkjaslkdjflkasjdf", DefaultClient())
+				vault = NewVaultUnmarshal(server.URL(), "lkjaslkdjflkasjdf")
 			})
 
 			AfterEach(func() {
@@ -91,7 +91,7 @@ var _ = Describe("given vault context", func() {
 						ghttp.RespondWith(http.StatusOK, b),
 					),
 				)
-				vault = NewVaultUnmarshal(server.URL(), "lkjaslkdjflkasjdf", DefaultClient())
+				vault = NewVaultUnmarshal(server.URL(), "lkjaslkdjflkasjdf")
 			})
 
 			AfterEach(func() {
@@ -129,7 +129,7 @@ var _ = Describe("given vault context", func() {
 						ghttp.RespondWith(http.StatusOK, b),
 					),
 				)
-				vault = NewVaultUnmarshal(server.URL(), "lkjaslkdjflkasjdf", DefaultClient())
+				vault = NewVaultUnmarshal(server.URL(), "lkjaslkdjflkasjdf")
 			})
 
 			AfterEach(func() {

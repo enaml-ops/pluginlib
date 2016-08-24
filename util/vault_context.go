@@ -20,22 +20,18 @@ type VaultRotater interface {
 	RotateSecrets(hash string, secrets interface{}) error
 }
 
-type Doer interface {
-	Do(*http.Request) (*http.Response, error)
-}
-
-func NewVaultUnmarshal(domain, token string, client Doer) *VaultUnmarshal {
+func NewVaultUnmarshal(domain, token string) *VaultUnmarshal {
 	return &VaultUnmarshal{
 		Domain: domain,
 		Token:  token,
-		Client: client,
+		client: defaultClient(),
 	}
 }
 
 type VaultUnmarshal struct {
 	Domain string
 	Token  string
-	Client Doer
+	client *http.Client
 }
 
 type VaultJsonObject struct {
@@ -79,7 +75,7 @@ func (s *VaultUnmarshal) setVaultHashValues(hash string, body []byte) error {
 		req.Header.Set("Content-Type", "application/json")
 		s.decorateWithToken(req)
 
-		if res, err = s.Client.Do(req); err != nil {
+		if res, err = s.client.Do(req); err != nil {
 			lo.G.Errorf("error calling client %v", err)
 
 		} else if res.StatusCode != http.StatusOK && res.StatusCode != http.StatusNoContent {
@@ -100,7 +96,7 @@ func (s *VaultUnmarshal) setVaultHashValues(hash string, body []byte) error {
 func (s *VaultUnmarshal) getVaultHashValues(hash string) []byte {
 	req, _ := http.NewRequest("GET", fmt.Sprintf("%s/v1/%s", s.Domain, hash), nil)
 	s.decorateWithToken(req)
-	res, _ := s.Client.Do(req)
+	res, _ := s.client.Do(req)
 	b, _ := ioutil.ReadAll(res.Body)
 	return b
 }
@@ -109,10 +105,12 @@ func (s *VaultUnmarshal) decorateWithToken(req *http.Request) {
 	req.Header.Add("X-Vault-Token", s.Token)
 }
 
-func DefaultClient() *http.Client {
-	tr := &http.Transport{
-		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+func defaultClient() *http.Client {
+	return &http.Client{
+		Transport: &http.Transport{
+			TLSClientConfig: &tls.Config{
+				InsecureSkipVerify: true,
+			},
+		},
 	}
-	client := &http.Client{Transport: tr}
-	return client
 }
