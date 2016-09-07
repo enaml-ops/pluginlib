@@ -13,26 +13,26 @@ import (
 )
 
 var (
-	cloudconfigs map[string]registryRecord
-	products     map[string]registryRecord
+	cloudconfigs map[string]Record
+	products     map[string]Record
 )
 
 func init() {
-	cloudconfigs = make(map[string]registryRecord)
-	products = make(map[string]registryRecord)
+	cloudconfigs = make(map[string]Record)
+	products = make(map[string]Record)
 }
 
-type registryRecord struct {
+type Record struct {
 	Name       string
 	Path       string
 	Properties map[string]interface{}
 }
 
-func ListCloudConfigs() map[string]registryRecord {
+func ListCloudConfigs() map[string]Record {
 	return cloudconfigs
 }
 
-func ListProducts() map[string]registryRecord {
+func ListProducts() map[string]Record {
 	return products
 }
 
@@ -40,7 +40,7 @@ func RegisterProduct(pluginpath string) ([]pcli.Flag, error) {
 	client, productPlugin := GetProductReference(pluginpath)
 	defer client.Kill()
 	meta := productPlugin.GetMeta()
-	products[meta.Name] = registryRecord{
+	products[meta.Name] = Record{
 		Name:       meta.Name,
 		Path:       pluginpath,
 		Properties: meta.Properties,
@@ -74,7 +74,7 @@ func RegisterCloudConfig(pluginpath string) ([]cli.Flag, error) {
 	client, ccPlugin := GetCloudConfigReference(pluginpath)
 	defer client.Kill()
 	meta := ccPlugin.GetMeta()
-	cloudconfigs[meta.Name] = registryRecord{
+	cloudconfigs[meta.Name] = Record{
 		Name:       meta.Name,
 		Path:       pluginpath,
 		Properties: meta.Properties,
