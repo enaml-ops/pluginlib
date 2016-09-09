@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/rpc"
 
-	"github.com/codegangsta/cli"
+	"gopkg.in/urfave/cli.v2"
 	"github.com/hashicorp/go-plugin"
 )
 

@@ -1,9 +1,9 @@
 package pcli
 
 import (
-	"github.com/codegangsta/cli"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"gopkg.in/urfave/cli.v2"
 )
 
 var _ = Describe("Given CLI flags", func() {
@@ -16,8 +16,8 @@ var _ = Describe("Given CLI flags", func() {
 				flg = Flag{FlagType: StringFlag, Name: flagname}
 			})
 			It("then it should automatically set the env var", func() {
-				Ω(flg.ToCli().(cli.StringFlag).EnvVar).ShouldNot(BeEmpty())
-				Ω(flg.ToCli().(cli.StringFlag).EnvVar).Should(Equal("OMG_HI_THERE_FLAG"))
+				Ω(flg.ToCli().(*cli.StringFlag).EnvVars).ShouldNot(BeEmpty())
+				Ω(flg.ToCli().(*cli.StringFlag).EnvVars).Should(ConsistOf("OMG_HI_THERE_FLAG"))
 			})
 		})
 
@@ -27,8 +27,8 @@ var _ = Describe("Given CLI flags", func() {
 				flg = Flag{FlagType: StringFlag, Name: flagname, EnvVar: control}
 			})
 			It("then it should use that", func() {
-				Ω(flg.ToCli().(cli.StringFlag).EnvVar).ShouldNot(BeEmpty())
-				Ω(flg.ToCli().(cli.StringFlag).EnvVar).Should(Equal(control))
+				Ω(flg.ToCli().(*cli.StringFlag).EnvVars).ShouldNot(BeEmpty())
+				Ω(flg.ToCli().(*cli.StringFlag).EnvVars).Should(ConsistOf(control))
 			})
 		})
 	})
@@ -42,7 +42,7 @@ var _ = Describe("Given CLI flags", func() {
 				ss.Value = controlString
 			})
 			It("then it should set the default value string on the returned interface", func() {
-				rval := ss.ToCli().(cli.StringSliceFlag)
+				rval := ss.ToCli().(*cli.StringSliceFlag)
 				Ω(rval.Value.Value()).Should(ConsistOf(controlString))
 			})
 		})
@@ -52,7 +52,7 @@ var _ = Describe("Given CLI flags", func() {
 				ss = Flag{FlagType: StringSliceFlag}
 			})
 			It("then it should leave the Value empty on the returned type", func() {
-				rval := ss.ToCli().(cli.StringSliceFlag)
+				rval := ss.ToCli().(*cli.StringSliceFlag)
 				Ω(rval.Value.Value()).Should(BeEmpty())
 			})
 		})

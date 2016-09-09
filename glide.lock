@@ -1,33 +1,58 @@
-hash: 0e88db0e93bd846f72b297f56dde8c67f4539ebb843617871239e359067d9ece
-updated: 2016-07-22T14:52:57.985794821-04:00
+hash: d85e87240f6a5e19793609457f004a02af4a03500697aa6b5b527ca7864e6dcb
+updated: 2016-09-09T11:07:11.684561598-06:00
 imports:
-- name: github.com/codegangsta/cli
-  version: 11c134509d89c2018675f369955218a180dc7428
 - name: github.com/enaml-ops/enaml
-  version: 90d2b64b26292f25847fdf9d3d9ee4a191e331e9
-- name: github.com/enaml-ops/pluginlib
-  version: 496a4d33a5a81bc1baa107d80827d656cedd1fb3
-  subpackages:
-  - cloudconfig
-  - pcli
-  - product
-  - util
+  version: 533a6fb90ac4f152b6b793dff64044ce9508a0a0
 - name: github.com/golang/protobuf
-  version: 874264fbbb43f4d91e999fecb4b40143ed611400
+  version: 1f49d83d9aa00e6ce4fc8258c71cc7786aec968a
   subpackages:
   - proto
 - name: github.com/hashicorp/go-plugin
   version: 8cf118f7a2f0c7ef1c82f66d4f6ac77c7e27dc12
 - name: github.com/hashicorp/yamux
-  version: badf81fca035b8ebac61b5ab83330b72541056f4
+  version: d1caa6c97c9fc1cc9e83bbe34d0603f9ff0ce8bd
 - name: github.com/onsi/ginkgo
-  version: 7d3240191d7b2311b60090fcbc96e56bffc45ec0
+  version: 7b6efc7d7b052568b49ac02d3141c9d7a5a494a4
+  subpackages:
+  - config
+  - internal/codelocation
+  - internal/containernode
+  - internal/failer
+  - internal/leafnodes
+  - internal/remote
+  - internal/spec
+  - internal/specrunner
+  - internal/suite
+  - internal/testingtproxy
+  - internal/writer
+  - reporters
+  - reporters/stenographer
+  - types
 - name: github.com/onsi/gomega
-  version: 9ed8da19f2156b87a803a8fdf6d126f627a12db1
+  version: b48c9a8b2644326d0a44eaaacc8d83e35174a05d
+  subpackages:
+  - format
+  - ghttp
+  - internal/assertion
+  - internal/asyncassertion
+  - internal/oraclematcher
+  - internal/testingtsupport
+  - matchers
+  - matchers/support/goraph/bipartitegraph
+  - matchers/support/goraph/edge
+  - matchers/support/goraph/node
+  - matchers/support/goraph/util
+  - types
 - name: github.com/op/go-logging
   version: 970db520ece77730c7e4724c61121037378659d9
 - name: github.com/xchapter7x/lo
-  version: aa2602d0e8e8647f0ce7b53109b37040941915aa
+  version: e33b245fc7a8186582208abc2458c2691bff681c
+- name: gopkg.in/urfave/cli.v2
+  version: c72728f42438425ffcd487986936357e17ebba3f
 - name: gopkg.in/yaml.v2
   version: e4d366fc3c7938e2958e662b4258c7a89e1f0e3e
-devImports: []
+testImports:
+- name: golang.org/x/sys
+  version: 30de6d19a3bd89a5f38ae4028e23aaa5582648af
+  subpackages:
+  - unix

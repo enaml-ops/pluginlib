@@ -146,6 +146,16 @@ var _ = Describe("given vault context", func() {
 				Ω(ctx.StringSlice("knock-slice")).Should(ConsistOf("knocks-1", "knocks-2", "knocks-3"))
 			})
 
+			It("should not populate slice flags that were specified on the command line", func() {
+				flgs := []pcli.Flag{
+					pcli.Flag{FlagType: pcli.StringSliceFlag, Name: "knock-slice"},
+					pcli.Flag{FlagType: pcli.StringFlag, Name: "stuff"},
+				}
+				vault.UnmarshalFlags("secret/move-along-nothing-to-see-here", flgs)
+				ctx := NewContext([]string{"mycoolapp", "--stuff", "with-val", "--knock-slice", "no-knocks-here"}, ToCliFlagArray(flgs))
+				Ω(ctx.StringSlice("knock-slice")).Should(ConsistOf("no-knocks-here"))
+			})
+
 			It("should not populate flags that aren't defined in the context", func() {
 				flgs := []pcli.Flag{
 					pcli.Flag{FlagType: pcli.StringFlag, Name: "badda"},

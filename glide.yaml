@@ -1,12 +1,14 @@
 package: github.com/enaml-ops/pluginlib
 import:
-- package: github.com/codegangsta/cli
+- package: gopkg.in/urfave/cli.v2
+  version: c72728f42438425ffcd487986936357e17ebba3f
 - package: github.com/hashicorp/go-plugin
 - package: github.com/xchapter7x/lo
 - package: github.com/onsi/ginkgo
 - package: github.com/onsi/gomega
 - package: gopkg.in/yaml.v2
 - package: github.com/enaml-ops/enaml
+  version: 533a6fb90ac4f152b6b793dff64044ce9508a0a0
 - package: github.com/golang/protobuf
   subpackages:
   - proto

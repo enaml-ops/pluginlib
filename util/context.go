@@ -4,16 +4,16 @@ import (
 	"fmt"
 	"io/ioutil"
 
-	"github.com/codegangsta/cli"
+	"gopkg.in/urfave/cli.v2"
 )
 
 //NewContext - convenience method to construct a valid cli.Context within a
 //plugin
 func NewContext(args []string, myflags []cli.Flag) (context *cli.Context) {
-	command := cli.Command{
+	command := &cli.Command{
 		Flags: myflags,
 	}
-	app := cli.NewApp()
+	app := (&cli.App{})
 	app.Name = args[0]
 	app.HideHelp = true
 	app.Flags = myflags

@@ -4,8 +4,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/codegangsta/cli"
 	"github.com/xchapter7x/lo"
+	"gopkg.in/urfave/cli.v2"
 )
 
 type FlagType int
@@ -62,54 +62,55 @@ func createEnvVar(flagname string) string {
 }
 
 func StringFlagToCli(s Flag) interface{} {
-	return cli.StringFlag{
-		Name:   s.Name,
-		EnvVar: s.EnvVar,
-		Value:  s.Value,
-		Usage:  s.Usage,
+	return &cli.StringFlag{
+		Name:    s.Name,
+		EnvVars: []string{s.EnvVar},
+		Value:   s.Value,
+		Usage:   s.Usage,
 	}
 }
 
 func StringSliceFlagToCli(s Flag) interface{} {
-	var stringSlice *cli.StringSlice = &cli.StringSlice{}
+	var stringSlice *cli.StringSlice
 
 	if s.Value != "" {
-		*stringSlice = strings.Split(s.Value, ",")
+		stringSlice = cli.NewStringSlice(strings.Split(s.Value, ",")...)
+	} else {
+		stringSlice = cli.NewStringSlice()
 	}
 
-	res := cli.StringSliceFlag{
-		Name:   s.Name,
-		EnvVar: s.EnvVar,
-		Value:  stringSlice,
-		Usage:  s.Usage,
+	res := &cli.StringSliceFlag{
+		Name:    s.Name,
+		EnvVars: []string{s.EnvVar},
+		Value:   stringSlice,
+		Usage:   s.Usage,
 	}
 	return res
 }
 
 func BoolFlagToCli(s Flag) interface{} {
-
-	return cli.BoolFlag{
-		Name:   s.Name,
-		EnvVar: s.EnvVar,
-		Usage:  s.Usage,
+	return &cli.BoolFlag{
+		Name:    s.Name,
+		EnvVars: []string{s.EnvVar},
+		Usage:   s.Usage,
 	}
 }
 
 func IntFlagToCli(s Flag) interface{} {
 	intVal, _ := strconv.Atoi(s.Value)
-	return cli.IntFlag{
-		Name:   s.Name,
-		EnvVar: s.EnvVar,
-		Value:  intVal,
-		Usage:  s.Usage,
+	return &cli.IntFlag{
+		Name:    s.Name,
+		EnvVars: []string{s.EnvVar},
+		Value:   intVal,
+		Usage:   s.Usage,
 	}
 }
 
 func BoolTFlagToCli(s Flag) interface{} {
-
-	return cli.BoolTFlag{
-		Name:   s.Name,
-		EnvVar: s.EnvVar,
-		Usage:  s.Usage,
+	return &cli.BoolFlag{
+		Value:   true,
+		Name:    s.Name,
+		EnvVars: []string{s.EnvVar},
+		Usage:   s.Usage,
 	}
 }

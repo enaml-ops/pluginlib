@@ -1,7 +1,7 @@
 package pluginutil_test
 
 import (
-	"github.com/codegangsta/cli"
+	"gopkg.in/urfave/cli.v2"
 	"github.com/enaml-ops/pluginlib/pcli"
 	. "github.com/enaml-ops/pluginlib/util"
 	. "github.com/onsi/ginkgo"

@@ -4,7 +4,7 @@ import (
 	"flag"
 	"io/ioutil"
 
-	"github.com/codegangsta/cli"
+	"gopkg.in/urfave/cli.v2"
 	. "github.com/enaml-ops/pluginlib/util"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -14,7 +14,7 @@ var _ = Describe("NewContext function", func() {
 	Context("when called with valid args and flags", func() {
 		It("then it should return a properly init'd cli.context", func() {
 			ctx := NewContext([]string{"test", "--this", "that"}, []cli.Flag{
-				cli.StringFlag{Name: "this"},
+				&cli.StringFlag{Name: "this"},
 			})
 			Ω(ctx.String("this")).Should(Equal("that"))
 		})
