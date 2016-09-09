@@ -18,18 +18,53 @@ const (
 	BoolTFlag
 )
 
-type (
-	Flag struct {
-		Name     string
-		Usage    string
-		EnvVar   string
-		Value    string
-		FlagType FlagType
+type Flag struct {
+	Name     string
+	Usage    string
+	EnvVar   string
+	Value    string
+	FlagType FlagType
+}
+
+// CreateStringFlag creates a string flag with an optional default value.
+func CreateStringFlag(name, usage string, value ...string) Flag {
+	res := Flag{FlagType: StringFlag, Name: name, Usage: usage, EnvVar: makeEnvVarName(name)}
+	if len(value) > 0 {
+		res.Value = value[0]
 	}
-)
+	return res
+}
+
+// CreateBoolFlag creates a bool flag that is false by default.
+func CreateBoolFlag(name, usage string) Flag {
+	return Flag{FlagType: BoolFlag, Name: name, Usage: usage, EnvVar: makeEnvVarName(name)}
+}
+
+// CreateBoolTFlag creates a bool flag that is true by default.
+func CreateBoolTFlag(name, usage string) Flag {
+	return Flag{FlagType: BoolTFlag, Name: name, Usage: usage, EnvVar: makeEnvVarName(name)}
+}
+
+// CreateIntFlag creates an int flag with an optional default value.
+func CreateIntFlag(name, usage string, value ...string) Flag {
+	res := Flag{FlagType: IntFlag, Name: name, Usage: usage, EnvVar: makeEnvVarName(name)}
+	if len(value) > 0 {
+		res.Value = value[0]
+	}
+	return res
+}
+
+// CreateStringSliceFlag creates a string slice flag with an optional default value.
+func CreateStringSliceFlag(name, usage string, value ...string) Flag {
+	res := Flag{FlagType: StringSliceFlag, Name: name, Usage: usage, EnvVar: makeEnvVarName(name), Value: strings.Join(value, ",")}
+	return res
+}
+
+func makeEnvVarName(flagName string) string {
+	return strings.Replace(strings.ToUpper(flagName), "-", "_", -1)
+}
 
 func (s Flag) ToCli() interface{} {
-
 	if s.EnvVar == "" {
 		s.EnvVar = createEnvVar(s.Name)
 	}
