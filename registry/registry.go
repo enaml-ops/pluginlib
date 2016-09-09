@@ -4,7 +4,6 @@ import (
 	"log"
 	"os/exec"
 
-	"gopkg.in/urfave/cli.v2"
 	"github.com/enaml-ops/pluginlib/cloudconfig"
 	"github.com/enaml-ops/pluginlib/pcli"
 	"github.com/enaml-ops/pluginlib/product"
@@ -70,7 +69,7 @@ func GetProductReference(pluginpath string) (*plugin.Client, product.ProductDepl
 	return client, raw.(product.ProductDeployer)
 }
 
-func RegisterCloudConfig(pluginpath string) ([]cli.Flag, error) {
+func RegisterCloudConfig(pluginpath string) ([]pcli.Flag, error) {
 	client, ccPlugin := GetCloudConfigReference(pluginpath)
 	defer client.Kill()
 	meta := ccPlugin.GetMeta()

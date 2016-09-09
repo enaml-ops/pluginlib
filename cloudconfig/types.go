@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/rpc"
 
-	"gopkg.in/urfave/cli.v2"
+	"github.com/enaml-ops/pluginlib/pcli"
 	"github.com/hashicorp/go-plugin"
 )
 
@@ -17,7 +17,7 @@ type Meta struct {
 // plugins
 type CloudConfigDeployer interface {
 	GetMeta() Meta
-	GetFlags() []cli.Flag
+	GetFlags() []pcli.Flag
 	GetCloudConfig(args []string) []byte
 }
 
@@ -45,8 +45,8 @@ func (s *CloudConfigRPC) GetCloudConfig(args []string) []byte {
 	return resp
 }
 
-func (s *CloudConfigRPC) GetFlags() []cli.Flag {
-	var resp []cli.Flag
+func (s *CloudConfigRPC) GetFlags() []pcli.Flag {
+	var resp []pcli.Flag
 	err := s.client.Call("Plugin.GetFlags", new(interface{}), &resp)
 	log.Println("call: ", err)
 
@@ -62,7 +62,7 @@ type CloudConfigRPCServer struct {
 	Impl CloudConfigDeployer
 }
 
-func (s *CloudConfigRPCServer) GetFlags(args interface{}, resp *[]cli.Flag) error {
+func (s *CloudConfigRPCServer) GetFlags(args interface{}, resp *[]pcli.Flag) error {
 	*resp = s.Impl.GetFlags()
 	return nil
 }
