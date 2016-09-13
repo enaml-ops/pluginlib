@@ -34,7 +34,7 @@ type VaultUnmarshal struct {
 	client *http.Client
 }
 
-type VaultJsonObject struct {
+type vaultJsonObject struct {
 	LeaseID       string            `json:"lease_id"`
 	Renewable     bool              `json:"renewable"`
 	LeaseDuration float64           `json:"lease_duration"`
@@ -43,14 +43,16 @@ type VaultJsonObject struct {
 	Auth          interface{}       `json:"auth"`
 }
 
-func (s *VaultUnmarshal) RotateSecrets(hash string, secrets interface{}) (err error) {
+func (s *VaultUnmarshal) RotateSecrets(hash string, secrets interface{}) error {
 	return s.setVaultHashValues(hash, secrets.([]byte))
 }
 
-func (s *VaultUnmarshal) UnmarshalFlags(hash string, flgs []pcli.Flag) (err error) {
+func (s *VaultUnmarshal) UnmarshalFlags(hash string, flgs []pcli.Flag) error {
 	b := s.getVaultHashValues(hash)
-	vaultObj := new(VaultJsonObject)
-	json.Unmarshal(b, vaultObj)
+	vaultObj := new(vaultJsonObject)
+	if err := json.Unmarshal(b, vaultObj); err != nil {
+		return err
+	}
 
 	for i := range flgs {
 		flagName := flgs[i].Name
@@ -63,34 +65,34 @@ func (s *VaultUnmarshal) UnmarshalFlags(hash string, flgs []pcli.Flag) (err erro
 }
 
 func (s *VaultUnmarshal) setVaultHashValues(hash string, body []byte) error {
-	var err error
-	var req *http.Request
-	var res *http.Response
-	var b []byte
-
-	if req, err = http.NewRequest("POST", fmt.Sprintf("%s/v1/%s", s.Domain, hash), bytes.NewBuffer(body)); err != nil {
+	req, err := http.NewRequest("POST", fmt.Sprintf("%s/v1/%s", s.Domain, hash), bytes.NewBuffer(body))
+	if err != nil {
 		lo.G.Errorf("error in vault request %v", err)
-
-	} else {
-		req.Header.Set("Content-Type", "application/json")
-		s.decorateWithToken(req)
-
-		if res, err = s.client.Do(req); err != nil {
-			lo.G.Errorf("error calling client %v", err)
-
-		} else if res.StatusCode != http.StatusOK && res.StatusCode != http.StatusNoContent {
-			err = fmt.Errorf("status code is not ok: %v", res.StatusCode)
-			lo.G.Error(err.Error())
-
-		} else {
-
-			if b, err = ioutil.ReadAll(res.Body); err != nil {
-				lo.G.Errorf("error in reading response %v", err)
-			}
-			lo.G.Debugf("vault res: %v", string(b))
-		}
+		return err
 	}
-	return err
+
+	req.Header.Set("Content-Type", "application/json")
+	s.decorateWithToken(req)
+
+	res, err := s.client.Do(req)
+	if err != nil {
+		lo.G.Errorf("error calling client %v", err)
+		return err
+	}
+
+	if res.StatusCode != http.StatusOK && res.StatusCode != http.StatusNoContent {
+		lo.G.Errorf("bad resp code from vault: %d", res.StatusCode)
+		return fmt.Errorf("status code is not ok: %v", res.StatusCode)
+	}
+
+	b, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		lo.G.Errorf("error reading response: %v", err)
+		return err
+	}
+
+	lo.G.Debugf("vault res: %v", string(b))
+	return nil
 }
 
 func (s *VaultUnmarshal) getVaultHashValues(hash string) []byte {
