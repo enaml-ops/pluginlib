@@ -1,8 +1,8 @@
-hash: ffe5f6c7fb99edd0604c77bfa97040d4ed948236337089036064723238a7e205
-updated: 2016-09-17T10:52:50.214408178-04:00
+hash: 09fbce7dc8145a5fdf2411dfe0b73958ba718f6245219410aa2cf9c5ebce380e
+updated: 2016-09-18T12:45:43.241645671-04:00
 imports:
 - name: github.com/enaml-ops/enaml
-  version: 4febd27aeed0c4228d20302be1fd0ebc7c4860f8
+  version: b232608251205ea0fc1e039631214a64954f7cb1
 - name: github.com/golang/protobuf
   version: 1f49d83d9aa00e6ce4fc8258c71cc7786aec968a
   subpackages:

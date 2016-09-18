@@ -8,7 +8,7 @@ import:
 - package: github.com/onsi/gomega
 - package: gopkg.in/yaml.v2
 - package: github.com/enaml-ops/enaml
-  version: v0.0.14
+  version: v0.0.15
 - package: github.com/golang/protobuf
   subpackages:
   - proto
