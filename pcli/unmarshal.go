@@ -146,14 +146,36 @@ func unmarshal(structVal reflect.Value, typ reflect.Type, c *cli.Context) (missi
 		}
 
 		// Check for missing [required] flags.
-		// Note: if a flag has a default value and was not specified on the command line,
-		// c.IsSet(flag) will return false. So in order to check if a flag is truly missing,
-		// we check that its default value is non-zero.
 		if !optional && !c.IsSet(flagName) {
-			if reflect.Zero(reflect.TypeOf(value)).Interface() == desiredValue.Interface() {
+			if flagIsMissing(value, desiredValue) { //reflect.Zero(reflect.TypeOf(value)).Interface() == desiredValue.Interface() {
 				missingFlags = append(missingFlags, flagName)
 			}
 		}
 	}
 	return
+}
+
+// flagIsMissing checks whether the flag is missing.
+//
+// Note: if a flag has a default value and was not specified on the command line,
+// c.IsSet(flag) will return false. So in order to check if a flag is truly missing,
+// we check that its default value is non-zero.
+//
+// For non-slice types, we do a simple comparison.
+// However, equality is not defined for slice types, so for slices
+// we just check if they are empty.
+func flagIsMissing(contextValue interface{}, desiredValue reflect.Value) bool {
+	if desiredValue.Kind() == reflect.Slice {
+		return sliceIsEmpty(desiredValue)
+	} else {
+		return reflectValueIsZero(contextValue, desiredValue)
+	}
+}
+
+func reflectValueIsZero(contextValue interface{}, desiredValue reflect.Value) bool {
+	return reflect.Zero(reflect.TypeOf(contextValue)).Interface() == desiredValue.Interface()
+}
+
+func sliceIsEmpty(v reflect.Value) bool {
+	return v.Len() == 0
 }

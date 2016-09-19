@@ -214,6 +214,48 @@ var _ = Describe("Unmarshal flags", func() {
 			Ω(pcli.UnmarshalFlags(&t, context)).ShouldNot(Succeed())
 		})
 
+		Context("when the context is missing required slice flags", func() {
+			BeforeEach(func() {
+				flags = []cli.Flag{
+					&cli.StringFlag{Name: "string-flag"},
+					&cli.IntFlag{Name: "int-flag"},
+					&cli.StringSliceFlag{Name: "string-slice-flag"},
+					&cli.IntSliceFlag{Name: "int-slice-flag"},
+					&cli.BoolFlag{Name: "bool-flag"},
+					&cli.Float64Flag{Name: "float-flag"},
+				}
+				context = pluginutil.NewContext([]string{
+					"foo",
+					"--string-flag", "foo",
+					"--int-flag", "42",
+					"--int-slice-flag", "1", "--int-slice-flag", "2", "--int-slice-flag", "3",
+					"--bool-flag",
+					"--float-flag", "1.23",
+				}, flags)
+			})
+
+			type FlagTest struct {
+				StringFlag      string
+				IntFlag         int
+				StringSliceFlag []string
+				IntSliceFlag    []int
+				BoolFlag        bool
+				FloatFlag       float64
+			}
+
+			It("should not panic", func() {
+				Ω(func() {
+					t := FlagTest{}
+					Ω(pcli.UnmarshalFlags(&t, context)).ShouldNot(Succeed())
+				}).ShouldNot(Panic())
+			})
+
+			It("should return an error", func() {
+				t := FlagTest{}
+				Ω(pcli.UnmarshalFlags(&t, context)).ShouldNot(Succeed())
+			})
+		})
+
 		Context("when using flags with defaults", func() {
 			BeforeEach(func() {
 				flags = []cli.Flag{
