@@ -93,6 +93,7 @@ var _ = Describe("Unmarshal flags", func() {
 				Dummy1          string `omg:"-"`
 				Dummy2          string
 			}
+
 			var t FlagTest
 
 			BeforeEach(func() {
@@ -116,6 +117,41 @@ var _ = Describe("Unmarshal flags", func() {
 				Ω(t.DontChange).Should(Equal("original"))
 				Ω(t.DontChange).ShouldNot(Equal("me"))
 				Ω(t.Dummy1).Should(Equal("dummy"))
+			})
+		})
+
+		Context("when unmarshalling embedded fields", func() {
+			type (
+				Slices struct {
+					StringSliceFlag []string
+					IntSliceFlag    []int
+				}
+				FlagTest struct {
+					Slices
+					StringFlag string
+					IntFlag    int
+					BoolFlag   bool
+					FloatFlag  float64
+				}
+			)
+
+			var t FlagTest
+
+			BeforeEach(func() {
+				t = FlagTest{}
+				pcli.UnmarshalFlags(&t, context)
+			})
+
+			It("sets the non-embedded fields correctly", func() {
+				Ω(t.StringFlag).Should(Equal("mystring"))
+				Ω(t.IntFlag).Should(Equal(42))
+				Ω(t.BoolFlag).Should(BeTrue())
+				Ω(t.FloatFlag).Should(Equal(1.23))
+			})
+
+			It("sets the embedded fields correctly", func() {
+				Ω(t.StringSliceFlag).Should(ConsistOf("value1", "value2"))
+				Ω(t.IntSliceFlag).Should(ConsistOf(1, 2, 3))
 			})
 		})
 

@@ -38,13 +38,61 @@ func UnmarshalFlags(obj interface{}, c *cli.Context) error {
 	if k != reflect.Ptr || (k == reflect.Ptr && typ.Elem().Kind() != reflect.Struct) {
 		panic("unmarshal: obj must be a pointer to a struct type")
 	}
+
 	typ = typ.Elem()
+	structVal := reflect.ValueOf(obj)
 
 	var missingFlags []string
+	missingFlags = append(missingFlags, unmarshal(structVal, typ, c)...)
 
-	structVal := reflect.ValueOf(obj)
+	if len(missingFlags) > 0 {
+		return fmt.Errorf("unmarshal: missing flags %v", missingFlags)
+	}
+	return nil
+}
+
+func parseFlagName(tag string) (flag string, optional bool) {
+	pieces := strings.Split(tag, ",")
+	flag = pieces[0]
+	if len(pieces) == 2 {
+		optional = pieces[1] == "optional"
+	}
+	return
+}
+
+func deriveFlagName(fieldName string) string {
+	buf := &bytes.Buffer{}
+	w := bufio.NewWriter(buf)
+	for index, runeValue := range fieldName {
+		if unicode.IsUpper(runeValue) {
+			if index != 0 {
+				w.WriteRune('-')
+			}
+			w.WriteRune(unicode.ToLower(runeValue))
+		} else {
+			w.WriteRune(runeValue)
+		}
+	}
+	w.Flush()
+	return buf.String()
+}
+
+func unmarshal(structVal reflect.Value, typ reflect.Type, c *cli.Context) (missingFlags []string) {
 	for i := 0; i < typ.NumField(); i++ {
 		field := typ.Field(i)
+
+		if field.Anonymous {
+			// recurse into embedded fields
+			var embeddedField reflect.Value
+			if structVal.Kind() == reflect.Ptr {
+				embeddedField = structVal.Elem().Field(i)
+			} else {
+				embeddedField = structVal.Field(i)
+			}
+			missingFlags = append(missingFlags, unmarshal(embeddedField, embeddedField.Type(), c)...)
+			continue
+		}
+
 		flagName := field.Tag.Get(omgTagName)
 		optional := false
 
@@ -91,7 +139,11 @@ func UnmarshalFlags(obj interface{}, c *cli.Context) error {
 		}
 
 		desiredValue := reflect.ValueOf(value)
-		structVal.Elem().Field(i).Set(desiredValue)
+		if structVal.Kind() == reflect.Ptr {
+			structVal.Elem().Field(i).Set(desiredValue)
+		} else {
+			structVal.Field(i).Set(desiredValue)
+		}
 
 		// Check for missing [required] flags.
 		// Note: if a flag has a default value and was not specified on the command line,
@@ -103,35 +155,5 @@ func UnmarshalFlags(obj interface{}, c *cli.Context) error {
 			}
 		}
 	}
-
-	if len(missingFlags) > 0 {
-		return fmt.Errorf("unmarshal: missing flags %v", missingFlags)
-	}
-	return nil
-}
-
-func parseFlagName(tag string) (flag string, optional bool) {
-	pieces := strings.Split(tag, ",")
-	flag = pieces[0]
-	if len(pieces) == 2 {
-		optional = pieces[1] == "optional"
-	}
 	return
-}
-
-func deriveFlagName(fieldName string) string {
-	buf := &bytes.Buffer{}
-	w := bufio.NewWriter(buf)
-	for index, runeValue := range fieldName {
-		if unicode.IsUpper(runeValue) {
-			if index != 0 {
-				w.WriteRune('-')
-			}
-			w.WriteRune(unicode.ToLower(runeValue))
-		} else {
-			w.WriteRune(runeValue)
-		}
-	}
-	w.Flush()
-	return buf.String()
 }
