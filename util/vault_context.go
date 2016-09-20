@@ -12,10 +12,6 @@ import (
 	"github.com/xchapter7x/lo"
 )
 
-type VaultUnmarshaler interface {
-	UnmarshalFlags(hash string, flgs []pcli.Flag) (err error)
-}
-
 type VaultRotater interface {
 	RotateSecrets(hash string, secrets interface{}) error
 }
@@ -47,6 +43,8 @@ func (s *VaultUnmarshal) RotateSecrets(hash string, secrets interface{}) error {
 	return s.setVaultHashValues(hash, secrets.([]byte))
 }
 
+// UnmarshalFlags sets default values for any flags in flgs that have
+// values in the specified Vault hash.
 func (s *VaultUnmarshal) UnmarshalFlags(hash string, flgs []pcli.Flag) error {
 	b := s.getVaultHashValues(hash)
 	vaultObj := new(vaultJsonObject)
@@ -59,6 +57,31 @@ func (s *VaultUnmarshal) UnmarshalFlags(hash string, flgs []pcli.Flag) error {
 		if vaultValue, ok := vaultObj.Data[flagName]; ok {
 			flgs[i].Value = vaultValue
 			lo.G.Debugf("set %s flag from vault (value=%s)", flagName, vaultValue)
+		}
+	}
+	return nil
+}
+
+// UnmarshalSomeFlags is like UnmarshalFlags except it takes a whitelist of flags to unmarshal.
+func (s *VaultUnmarshal) UnmarshalSomeFlags(hash string, flags []pcli.Flag, flagnames ...string) error {
+	flagsToUnmarshal := make(map[string]struct{})
+	for i := range flagnames {
+		flagsToUnmarshal[flagnames[i]] = struct{}{}
+	}
+
+	b := s.getVaultHashValues(hash)
+	var vaultObj vaultJsonObject
+	if err := json.Unmarshal(b, &vaultObj); err != nil {
+		return err
+	}
+
+	for i := range flags {
+		name := flags[i].Name
+		_, shouldUnmarshal := flagsToUnmarshal[name]
+		vaultValue, inVault := vaultObj.Data[name]
+		if shouldUnmarshal && inVault {
+			flags[i].Value = vaultValue
+			lo.G.Debugf("set %s flag from vault (value=%s)", name, vaultValue)
 		}
 	}
 	return nil

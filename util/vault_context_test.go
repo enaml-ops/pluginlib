@@ -81,7 +81,7 @@ var _ = Describe("given vault context", func() {
 
 		Context("when unmarshalling string flags", func() {
 			var server *ghttp.Server
-			var vault VaultUnmarshaler
+			var vault *VaultUnmarshal
 
 			BeforeEach(func() {
 				b, _ := ioutil.ReadFile("fixtures/vault.json")
@@ -107,6 +107,23 @@ var _ = Describe("given vault context", func() {
 				Ω(ctx.String("knock")).Should(Equal("knocks"))
 			})
 
+			It("should not populate flags that aren't specified in the whitelist (UnmarshalSomeFlags)", func() {
+				flgs := []pcli.Flag{
+					pcli.Flag{FlagType: pcli.StringFlag, Name: "knock", Value: "overwriteme"},
+					pcli.Flag{FlagType: pcli.StringFlag, Name: "otherstuff", Value: "dontoverwriteme"},
+				}
+				vault.UnmarshalSomeFlags("secret/move-along-nothing-to-see-here", flgs, "knock")
+
+				for i := range flgs {
+					switch flgs[i].Name {
+					case "knock":
+						Ω(flgs[i].Value).Should(Equal("knocks"))
+					case "otherstuff":
+						Ω(flgs[i].Value).Should(Equal("dontoverwriteme"))
+					}
+				}
+			})
+
 			It("should not overwrite flags that were specified on the command line", func() {
 				flgs := []pcli.Flag{
 					pcli.Flag{FlagType: pcli.StringFlag, Name: "knock"},
@@ -119,7 +136,7 @@ var _ = Describe("given vault context", func() {
 
 		Context("when unmarshalling string slice flags", func() {
 			var server *ghttp.Server
-			var vault VaultUnmarshaler
+			var vault *VaultUnmarshal
 
 			BeforeEach(func() {
 				b, _ := ioutil.ReadFile("fixtures/vaultslice.json")
