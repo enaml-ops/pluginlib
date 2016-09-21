@@ -1,7 +1,6 @@
 package product
 
 import (
-	"io"
 	"log"
 	"net/rpc"
 
@@ -12,12 +11,6 @@ import (
 type Meta struct {
 	Name       string
 	Properties map[string]interface{}
-}
-
-//CredentialProvidorFactory - interface which represents an object that can create a reader or writer to a credential providor.
-type CredentialProvidor interface {
-	NewCredentialWriter(hashname string) io.WriteCloser
-	NewCredentialReader(hashname string) io.ReadCloser
 }
 
 // ProductDeployer is the interface that we will expose for product
