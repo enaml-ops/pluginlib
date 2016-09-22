@@ -18,7 +18,7 @@ type Meta struct {
 type ProductDeployer interface {
 	GetMeta() Meta
 	GetFlags() []pcli.Flag
-	GetProduct(args []string, cloudConfig []byte) []byte
+	GetProduct(args []string, cloudConfig []byte) ([]byte, error)
 }
 
 // ProductRPC - Here is an implementation that talks over RPC
@@ -39,7 +39,7 @@ type RPCArgs struct {
 	Arg2 []byte
 }
 
-func (s *ProductRPC) GetProduct(args []string, cloudConfig []byte) []byte {
+func (s *ProductRPC) GetProduct(args []string, cloudConfig []byte) ([]byte, error) {
 	var resp []byte
 	log.Println("calling rpc client getcloudconfig")
 	err := s.client.Call("Plugin.GetProduct", RPCArgs{
@@ -47,10 +47,7 @@ func (s *ProductRPC) GetProduct(args []string, cloudConfig []byte) []byte {
 		Arg2: cloudConfig,
 	}, &resp)
 	log.Println("call:", err)
-	if err != nil {
-		panic(err)
-	}
-	return resp
+	return resp, err
 }
 
 func (s *ProductRPC) GetFlags() []pcli.Flag {
@@ -80,8 +77,8 @@ func (s *ProductRPCServer) GetMeta(args interface{}, resp *Meta) error {
 	return nil
 }
 
-func (s *ProductRPCServer) GetProduct(args RPCArgs, resp *[]byte) error {
-	*resp = s.Impl.GetProduct(args.Arg1, args.Arg2)
+func (s *ProductRPCServer) GetProduct(args RPCArgs, resp *[]byte, err *error) error {
+	*resp, *err = s.Impl.GetProduct(args.Arg1, args.Arg2)
 	return nil
 }
 
