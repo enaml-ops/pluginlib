@@ -1,6 +1,7 @@
 package product
 
 import (
+	"errors"
 	"log"
 	"net/rpc"
 
@@ -41,12 +42,12 @@ type RPCArgs struct {
 
 type RPCResponse struct {
 	ResBytes []byte
-	ErrRes   error
+	ErrRes   string
 }
 
 func (s *ProductRPC) GetProduct(args []string, cloudConfig []byte) (b []byte, err error) {
 	var rpcRes = RPCResponse{}
-	log.Println("calling rpc client getcloudconfig")
+	log.Println("calling rpc client get product")
 	if err := s.client.Call("Plugin.GetProduct", RPCArgs{
 		Arg1: args,
 		Arg2: cloudConfig,
@@ -54,7 +55,12 @@ func (s *ProductRPC) GetProduct(args []string, cloudConfig []byte) (b []byte, er
 		log.Println("call:", err)
 		return nil, err
 	}
-	return rpcRes.ResBytes, rpcRes.ErrRes
+
+	if rpcRes.ErrRes != "" {
+		log.Println("error: ", rpcRes.ErrRes)
+		err = errors.New(rpcRes.ErrRes)
+	}
+	return rpcRes.ResBytes, err
 }
 
 func (s *ProductRPC) GetFlags() []pcli.Flag {
@@ -85,7 +91,14 @@ func (s *ProductRPCServer) GetMeta(args interface{}, resp *Meta) error {
 }
 
 func (s *ProductRPCServer) GetProduct(args RPCArgs, resp *RPCResponse) error {
-	resp.ResBytes, resp.ErrRes = s.Impl.GetProduct(args.Arg1, args.Arg2)
+	var err error
+	resp.ResBytes, err = s.Impl.GetProduct(args.Arg1, args.Arg2)
+	resp.ErrRes = ""
+
+	if err != nil {
+		log.Println("we are seeing an error", err)
+		resp.ErrRes = err.Error()
+	}
 	return nil
 }
 
