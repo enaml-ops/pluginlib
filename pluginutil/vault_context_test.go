@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/enaml-ops/pluginlib/pcli"
-	. "github.com/enaml-ops/pluginlib/util"
+	. "github.com/enaml-ops/pluginlib/pluginutil"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/ghttp"

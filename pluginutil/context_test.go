@@ -4,10 +4,10 @@ import (
 	"flag"
 	"io/ioutil"
 
-	"gopkg.in/urfave/cli.v2"
-	. "github.com/enaml-ops/pluginlib/util"
+	. "github.com/enaml-ops/pluginlib/pluginutil"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"gopkg.in/urfave/cli.v2"
 )
 
 var _ = Describe("NewContext function", func() {

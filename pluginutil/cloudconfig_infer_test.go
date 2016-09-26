@@ -7,7 +7,7 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 
-	. "github.com/enaml-ops/pluginlib/util"
+	. "github.com/enaml-ops/pluginlib/pluginutil"
 )
 
 var _ = Describe("CloudConfigInfer", func() {

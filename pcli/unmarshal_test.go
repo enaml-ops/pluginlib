@@ -5,7 +5,7 @@ import (
 	. "github.com/onsi/gomega"
 
 	"github.com/enaml-ops/pluginlib/pcli"
-	"github.com/enaml-ops/pluginlib/util"
+	"github.com/enaml-ops/pluginlib/pluginutil"
 
 	cli "gopkg.in/urfave/cli.v2"
 )

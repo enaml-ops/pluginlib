@@ -1,11 +1,11 @@
 package pluginutil_test
 
 import (
-	"gopkg.in/urfave/cli.v2"
 	"github.com/enaml-ops/pluginlib/pcli"
-	. "github.com/enaml-ops/pluginlib/util"
+	. "github.com/enaml-ops/pluginlib/pluginutil"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"gopkg.in/urfave/cli.v2"
 )
 
 var _ = Describe("given ToCliFlagArray", func() {
