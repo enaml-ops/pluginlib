@@ -17,7 +17,7 @@ type Store interface {
 	Post(path, key, value string) error
 
 	// PostBulk updates all key/value pairs at the specified path.
-	PostBulk(path, values map[string]string) error
+	PostBulk(path string, values map[string]string) error
 }
 
 // Overlay provides default values for the specified flags

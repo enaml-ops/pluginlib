@@ -16,9 +16,9 @@ const (
 
 type dummyStore struct{}
 
-func (dummyStore) Get(path, key string) (string, error)          { return "", nil }
-func (dummyStore) Post(path, key, value string) error            { return nil }
-func (dummyStore) PostBulk(path, values map[string]string) error { return nil }
+func (dummyStore) Get(path, key string) (string, error)                 { return "", nil }
+func (dummyStore) Post(path, key, value string) error                   { return nil }
+func (dummyStore) PostBulk(path string, values map[string]string) error { return nil }
 
 func (dummyStore) GetBulk(path string) (map[string]string, error) {
 	return map[string]string{
