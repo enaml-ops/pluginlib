@@ -5,8 +5,6 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
-	"io"
-	"io/ioutil"
 	"net/http"
 )
 
@@ -59,8 +57,6 @@ func (v *vaultStore) GetBulk(path string) (map[string]string, error) {
 
 // Post updates a single value at the specified path.
 func (v *vaultStore) Post(path, key, value string) error {
-	// vault doesn't support writing a single value,
-	// so we do a read-modify-write operation
 	props, err := v.GetBulk(path)
 	if err != nil {
 		return err
@@ -90,9 +86,6 @@ func (v *vaultStore) PostBulk(path string, values map[string]string) error {
 		return err
 	}
 	defer resp.Body.Close()
-
-	// we aren't concerned with the body for now
-	io.Copy(ioutil.Discard, resp.Body)
 
 	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusNoContent {
 		return fmt.Errorf("cred: vault POST failed with status %d", resp.StatusCode)
