@@ -2,6 +2,7 @@ package registry_test
 
 import (
 	"runtime"
+	"testing"
 
 	. "github.com/enaml-ops/pluginlib/registry"
 	. "github.com/onsi/ginkgo"
@@ -14,6 +15,9 @@ var _ = Describe("Registry", func() {
 		Context("when called w/ valid parameters", func() {
 
 			BeforeEach(func() {
+				if testing.Short() {
+					Skip("plugin registry tests skipped in short mode")
+				}
 				RegisterProduct("./fixtures/product/testproductplugin-" + runtime.GOOS)
 			})
 
@@ -28,6 +32,9 @@ var _ = Describe("Registry", func() {
 		Context("when called w/ valid parameters", func() {
 
 			BeforeEach(func() {
+				if testing.Short() {
+					Skip("plugin registry tests skipped in short mode")
+				}
 				RegisterCloudConfig("./fixtures/cloudconfig/testplugin-" + runtime.GOOS)
 			})
 
