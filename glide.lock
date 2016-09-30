@@ -1,10 +1,16 @@
-hash: 3d23db8b44ec04d024d4cee9774c07cdc6c4909385535d8e7bace1eca973ddea
-updated: 2016-09-26T10:15:57.765452071-06:00
+hash: 468f5fcd5bf1e8f53d8b6a4ac6d58f7241d2a5791d54069a923563548fec0087
+updated: 2016-09-29T21:01:09.516775912-04:00
 imports:
 - name: github.com/enaml-ops/enaml
-  version: b232608251205ea0fc1e039631214a64954f7cb1
+  version: 354a165b4ef98f0e154b6a0d8e8a54138abac102
+- name: github.com/enaml-ops/pluginlib
+  version: abb13473b33c76cbcde7a7532dc00dbc37561a89
+  subpackages:
+  - pcli
+  - cloudconfig
+  - product
 - name: github.com/golang/protobuf
-  version: 1f49d83d9aa00e6ce4fc8258c71cc7786aec968a
+  version: 87c000235d3d852c1628dc9490cd21ab36a7d69f
   subpackages:
   - proto
 - name: github.com/hashicorp/go-plugin
@@ -12,37 +18,9 @@ imports:
 - name: github.com/hashicorp/yamux
   version: d1caa6c97c9fc1cc9e83bbe34d0603f9ff0ce8bd
 - name: github.com/onsi/ginkgo
-  version: 46c87bb63f2d8d62b3076873b7a84da124da72ce
-  subpackages:
-  - config
-  - internal/codelocation
-  - internal/containernode
-  - internal/failer
-  - internal/leafnodes
-  - internal/remote
-  - internal/spec
-  - internal/specrunner
-  - internal/suite
-  - internal/testingtproxy
-  - internal/writer
-  - reporters
-  - reporters/stenographer
-  - types
+  version: 45a5f6ffb2a14e4f29698c16ae4c0a34018a8951
 - name: github.com/onsi/gomega
   version: d59fa0ac68bb5dd932ee8d24eed631cdd519efc3
-  subpackages:
-  - format
-  - ghttp
-  - internal/assertion
-  - internal/asyncassertion
-  - internal/oraclematcher
-  - internal/testingtsupport
-  - matchers
-  - matchers/support/goraph/bipartitegraph
-  - matchers/support/goraph/edge
-  - matchers/support/goraph/node
-  - matchers/support/goraph/util
-  - types
 - name: github.com/op/go-logging
   version: 970db520ece77730c7e4724c61121037378659d9
 - name: github.com/square/certstrap
@@ -54,9 +32,5 @@ imports:
 - name: gopkg.in/urfave/cli.v2
   version: c72728f42438425ffcd487986936357e17ebba3f
 - name: gopkg.in/yaml.v2
-  version: 31c299268d302dd0aa9a0dcf765a3d58971ac83f
-testImports:
-- name: golang.org/x/sys
-  version: 30de6d19a3bd89a5f38ae4028e23aaa5582648af
-  subpackages:
-  - unix
+  version: a5b47d31c556af34a302ce5d659e6fea44d90de0
+devImports: []
