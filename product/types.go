@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/rpc"
 
+	"github.com/enaml-ops/enaml"
 	"github.com/enaml-ops/pluginlib/pcli"
 	"github.com/hashicorp/go-plugin"
 )
@@ -12,6 +13,8 @@ import (
 type Meta struct {
 	Name       string
 	Properties map[string]interface{}
+	Releases   []enaml.Release
+	Stemcell   enaml.Stemcell
 }
 
 // ProductDeployer is the interface that we will expose for product
