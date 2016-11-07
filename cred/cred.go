@@ -1,6 +1,10 @@
 package cred
 
 import (
+	"errors"
+	"fmt"
+	"strings"
+
 	"github.com/enaml-ops/pluginlib/pcli"
 	"github.com/xchapter7x/lo"
 )
@@ -18,6 +22,42 @@ type Store interface {
 
 	// PostBulk updates all key/value pairs at the specified path.
 	PostBulk(path string, values map[string]string) error
+}
+
+// NewStore creates a new Store based on the specified connection string.
+// The following connection strings are supported:
+//   - Hashicorp Vault: 'vault://TOKEN@domain:port'
+//   - Filesystem: 'file://rootdir'
+//
+func NewStore(conn string) (Store, error) {
+	store, details, err := parseConnString(conn)
+	if err != nil {
+		return nil, err
+	}
+	switch store {
+	case "vault":
+		tokenSep := strings.Index(details, "@")
+		if tokenSep == -1 {
+			return nil, fmt.Errorf("invalid Vault connection string: %q should be TOKEN@domain:port", details)
+		}
+		token := details[:tokenSep]
+		domain := details[tokenSep+len("@"):]
+		return NewVaultStore(domain, token), nil
+	case "file":
+		return NewFileStore(details), nil
+	default:
+		return nil, fmt.Errorf("unknown cred store %q", store)
+	}
+}
+
+func parseConnString(conn string) (store, details string, err error) {
+	idx := strings.Index(conn, "://")
+	if idx == -1 {
+		return "", "", errors.New("invalid connection string, missing '://'")
+	}
+	store = conn[:idx]
+	details = conn[idx+len("://"):]
+	return store, details, nil
 }
 
 // Overlay provides default values for the specified flags

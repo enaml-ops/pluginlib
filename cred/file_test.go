@@ -14,7 +14,7 @@ var _ = Describe("file-backed cred store", func() {
 	var cs cred.Store
 
 	BeforeEach(func() {
-		cs = cred.NewFileStore()
+		cs = cred.NewFileStore(".")
 	})
 
 	Context("when targetting a non-existent path", func() {

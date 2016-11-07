@@ -4,18 +4,24 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"path/filepath"
 )
 
-type fileStore struct{}
+type fileStore struct {
+	rootDir string
+}
 
-// NewFileStore creates a Store backed by local files.
-func NewFileStore() Store {
-	return fileStore{}
+// NewFileStore creates a Store backed by local files at the specified root directory.
+func NewFileStore(root string) Store {
+	return fileStore{
+		rootDir: root,
+	}
 }
 
 // Get gets a single value from the specified path.
 func (fs fileStore) Get(path, key string) (string, error) {
-	kvPairs, err := readFile(path)
+	path = filepath.Join(fs.rootDir, path)
+	kvPairs, err := fs.readFile(path)
 	if err != nil {
 		return "", err
 	}
@@ -28,12 +34,14 @@ func (fs fileStore) Get(path, key string) (string, error) {
 
 // GetBulk gets all key/value pairs from the specified path.
 func (fs fileStore) GetBulk(path string) (map[string]string, error) {
-	return readFile(path)
+	path = filepath.Join(fs.rootDir, path)
+	return fs.readFile(path)
 }
 
 // Post updates a single value at the specified path.
 func (fs fileStore) Post(path, key, value string) error {
-	kvPairs, err := readFile(path)
+	path = filepath.Join(fs.rootDir, path)
+	kvPairs, err := fs.readFile(path)
 	if err != nil {
 		return err
 	}
@@ -48,6 +56,7 @@ func (fs fileStore) Post(path, key, value string) error {
 
 // PostBulk updates all key/value pairs at the specified path.
 func (fs fileStore) PostBulk(path string, values map[string]string) error {
+	path = filepath.Join(fs.rootDir, path)
 	f, err := os.OpenFile(path, os.O_TRUNC|os.O_WRONLY, 0666)
 	if err != nil {
 		return err
@@ -56,7 +65,7 @@ func (fs fileStore) PostBulk(path string, values map[string]string) error {
 	return json.NewEncoder(f).Encode(values)
 }
 
-func readFile(name string) (map[string]string, error) {
+func (fs fileStore) readFile(name string) (map[string]string, error) {
 	f, err := os.Open(name)
 	if err != nil {
 		return nil, err

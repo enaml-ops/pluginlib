@@ -29,6 +29,38 @@ func (dummyStore) GetBulk(path string) (map[string]string, error) {
 }
 
 var _ = Describe("cred store", func() {
+	Context("NewStore", func() {
+		It("returns an error when given an unsupported connection string", func() {
+			_, err := cred.NewStore("unsupported://connection-string")
+			Ω(err).Should(HaveOccurred())
+
+			_, err = cred.NewStore("not-even-a-connection-string")
+			Ω(err).Should(HaveOccurred())
+		})
+
+		It("returns an error when given an invalid Vault connection string", func() {
+			_, err := cred.NewStore("vault://myvaultwithoutatoken.com:8200")
+			Ω(err).Should(HaveOccurred())
+
+			_, err = cred.NewStore("vault://VAULT_TOKEN_BUT_NO_DOMAIN")
+			Ω(err).Should(HaveOccurred())
+		})
+
+		It("creates a Vault store when given a valid connection string", func() {
+			store, err := cred.NewStore("vault://token@10.0.1.2:8200")
+			Ω(err).ShouldNot(HaveOccurred())
+			Ω(store).ShouldNot(BeNil())
+			// TODO: move into package cred and type assert the result?
+		})
+
+		It("creates a filesystem-backed store", func() {
+			store, err := cred.NewStore("file://.")
+			Ω(err).ShouldNot(HaveOccurred())
+			Ω(store).ShouldNot(BeNil())
+			// TODO: move into package cred and type assert the result?
+		})
+	})
+
 	Context("Overlay", func() {
 		var (
 			flags []pcli.Flag
