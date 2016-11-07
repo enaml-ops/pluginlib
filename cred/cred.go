@@ -47,7 +47,7 @@ func NewStore(conn string) (Store, error) {
 		return NewFileStore(details), nil
 	default:
 		return nil, fmt.Errorf("unknown cred store %q", store)
-	}
+	} 
 }
 
 func parseConnString(conn string) (store, details string, err error) {

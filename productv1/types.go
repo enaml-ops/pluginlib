@@ -1,5 +1,5 @@
-// Package productv1 is the API for the V1 product interface.
-package productv1
+// Package product is the API for the V1 product interface.
+package product
 
 import (
 	"github.com/enaml-ops/pluginlib/cred"

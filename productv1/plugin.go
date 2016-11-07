@@ -1,4 +1,4 @@
-package productv1
+package product
 
 import (
 	"net/rpc"
