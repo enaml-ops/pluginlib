@@ -5,6 +5,7 @@ import (
 	"net/rpc"
 
 	"github.com/enaml-ops/pluginlib/cred"
+	"github.com/enaml-ops/pluginlib/pcli"
 	"github.com/xchapter7x/lo"
 )
 
@@ -46,6 +47,24 @@ func (p *ProductRPC) GetProduct(args []string, cloudConfig []byte, cs cred.Store
 	}
 
 	return resp.Bytes, nil
+}
+
+// GetMeta calls a plugin's GetMeta method over RPC.
+func (p *ProductRPC) GetMeta() Meta {
+	var resp Meta
+	if err := p.client.Call("Plugin.GetMeta", new(interface{}), &resp); err != nil {
+		panic(err)
+	}
+	return resp
+}
+
+// GetFlags calls a plugin's GetFlags method over RPC.
+func (p *ProductRPC) GetFlags() []pcli.Flag {
+	var resp []pcli.Flag
+	if err := p.client.Call("Plugin.GetFlags", new(interface{}), &resp); err != nil {
+		panic(err)
+	}
+	return resp
 }
 
 // ProductRPCServer is the RPC server that ProductRPC connects to.

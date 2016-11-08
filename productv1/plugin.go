@@ -28,6 +28,8 @@ func NewProductPlugin(pd ProductDeployer) ProductPlugin {
 	return ProductPlugin{Plugin: pd}
 }
 
+const PluginsMapHash = "product"
+
 var HandshakeConfig = plugin.HandshakeConfig{
 	ProtocolVersion:  1,
 	MagicCookieKey:   "BASIC_PLUGIN",
