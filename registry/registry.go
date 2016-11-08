@@ -6,7 +6,7 @@ import (
 
 	"github.com/enaml-ops/pluginlib/cloudconfig"
 	"github.com/enaml-ops/pluginlib/pcli"
-	"github.com/enaml-ops/pluginlib/product"
+	"github.com/enaml-ops/pluginlib/productv1"
 	"github.com/hashicorp/go-plugin"
 	"github.com/xchapter7x/lo"
 )
