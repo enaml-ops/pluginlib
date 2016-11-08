@@ -47,11 +47,11 @@ func RegisterProduct(pluginpath string) ([]pcli.Flag, error) {
 	return productPlugin.GetFlags(), nil
 }
 
-func GetProductReference(pluginpath string) (*plugin.Client, product.ProductDeployer) {
+func GetProductReference(pluginpath string) (*plugin.Client, product.Deployer) {
 	client := plugin.NewClient(&plugin.ClientConfig{
 		HandshakeConfig: product.HandshakeConfig,
 		Plugins: map[string]plugin.Plugin{
-			product.PluginsMapHash: new(product.ProductPlugin),
+			product.PluginsMapHash: new(product.Plugin),
 		},
 		Cmd: exec.Command(pluginpath, "plugin"),
 	})
@@ -66,7 +66,7 @@ func GetProductReference(pluginpath string) (*plugin.Client, product.ProductDepl
 	if err != nil {
 		log.Fatal(err)
 	}
-	return client, raw.(product.ProductDeployer)
+	return client, raw.(product.Deployer)
 }
 
 func RegisterCloudConfig(pluginpath string) ([]pcli.Flag, error) {

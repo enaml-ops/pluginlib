@@ -23,13 +23,13 @@ type (
 	}
 )
 
-// ProductRPC is an implementation of ProductDeployer that talks over RPC.
-type ProductRPC struct {
+// RPC is an implementation of Deployer that talks over RPC.
+type RPC struct {
 	client *rpc.Client
 }
 
 // GetProduct calls a plugin's GetProduct method over RPC.
-func (p *ProductRPC) GetProduct(args []string, cloudConfig []byte, cs cred.Store) ([]byte, error) {
+func (p *RPC) GetProduct(args []string, cloudConfig []byte, cs cred.Store) ([]byte, error) {
 	lo.G.Debug("calling RPC client GetProduct")
 	var resp Response
 	err := p.client.Call("Plugin.GetProduct", Args{
@@ -50,7 +50,7 @@ func (p *ProductRPC) GetProduct(args []string, cloudConfig []byte, cs cred.Store
 }
 
 // GetMeta calls a plugin's GetMeta method over RPC.
-func (p *ProductRPC) GetMeta() Meta {
+func (p *RPC) GetMeta() Meta {
 	var resp Meta
 	if err := p.client.Call("Plugin.GetMeta", new(interface{}), &resp); err != nil {
 		panic(err)
@@ -59,7 +59,7 @@ func (p *ProductRPC) GetMeta() Meta {
 }
 
 // GetFlags calls a plugin's GetFlags method over RPC.
-func (p *ProductRPC) GetFlags() []pcli.Flag {
+func (p *RPC) GetFlags() []pcli.Flag {
 	var resp []pcli.Flag
 	if err := p.client.Call("Plugin.GetFlags", new(interface{}), &resp); err != nil {
 		panic(err)
@@ -67,15 +67,15 @@ func (p *ProductRPC) GetFlags() []pcli.Flag {
 	return resp
 }
 
-// ProductRPCServer is the RPC server that ProductRPC connects to.
+// RPCServer is the RPC server that ProductRPC connects to.
 // It conforms to the requirements of net/rpc.
-type ProductRPCServer struct {
-	Impl ProductDeployer
+type RPCServer struct {
+	Impl Deployer
 }
 
 // GetProduct forwards the RPC request to the plugin's GetProduct method
 // and sends back the results.
-func (p *ProductRPCServer) GetProduct(args Args, resp *Response) error {
+func (p *RPCServer) GetProduct(args Args, resp *Response) error {
 	var err error
 	resp.Bytes, err = p.Impl.GetProduct(args.Args, args.CloudConfig, args.CredStore)
 

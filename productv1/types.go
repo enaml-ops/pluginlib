@@ -15,8 +15,8 @@ type Meta struct {
 	Stemcell   enaml.Stemcell
 }
 
-// ProductDeployer is the interface implemented by V1 product plugins.
-type ProductDeployer interface {
+// Deployer is the interface implemented by V1 product plugins.
+type Deployer interface {
 	GetProduct(args []string, cloudConfig []byte, cs cred.Store) ([]byte, error)
 	GetMeta() Meta
 	GetFlags() []pcli.Flag
