@@ -7,14 +7,14 @@ import (
 	plugin "github.com/hashicorp/go-plugin"
 )
 
-func NewCloudConfigPlugin(plg CloudConfigDeployer) Plugin {
+func NewCloudConfigPlugin(plg Deployer) Plugin {
 	return Plugin{
 		Plugin: plg,
 	}
 }
 
 type Plugin struct {
-	Plugin CloudConfigDeployer
+	Plugin Deployer
 }
 
 func (s Plugin) Server(*plugin.MuxBroker) (interface{}, error) {
@@ -37,7 +37,7 @@ var HandshakeConfig = plugin.HandshakeConfig{
 
 // Run runs a CloudConfigDeployer as an RPC server.
 // It should be called from a plugin's func main.
-func Run(cc CloudConfigDeployer) {
+func Run(cc Deployer) {
 	if len(os.Args) >= 2 && os.Args[1] != "" {
 		plugin.Serve(&plugin.ServeConfig{
 			HandshakeConfig: HandshakeConfig,

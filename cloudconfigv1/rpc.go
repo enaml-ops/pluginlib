@@ -57,7 +57,7 @@ func (s *RPC) GetFlags() []pcli.Flag {
 // RPCServer - Here is the RPC server that GreeterRPC talks to, conforming to
 // the requirements of net/rpc
 type RPCServer struct {
-	Impl CloudConfigDeployer
+	Impl Deployer
 }
 
 func (s *RPCServer) GetFlags(args interface{}, resp *[]pcli.Flag) error {

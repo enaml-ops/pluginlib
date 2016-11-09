@@ -7,9 +7,8 @@ type Meta struct {
 	Properties map[string]interface{}
 }
 
-// CloudConfigDeployer is the interface that we will expose for cloud config
-// plugins
-type CloudConfigDeployer interface {
+// Deployer is the interface for cloud config plugins
+type Deployer interface {
 	GetMeta() Meta
 	GetFlags() []pcli.Flag
 	GetCloudConfig(args []string) ([]byte, error)
