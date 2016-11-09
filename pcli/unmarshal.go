@@ -111,6 +111,7 @@ func unmarshal(structVal reflect.Value, typ reflect.Type, c *cli.Context) (missi
 		switch field.Type.Kind() {
 		case reflect.Bool:
 			value = c.Bool(flagName)
+			optional = true // bool flags aren't required to be present on the command line
 		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32:
 			value = c.Int(flagName)
 		case reflect.Int64:

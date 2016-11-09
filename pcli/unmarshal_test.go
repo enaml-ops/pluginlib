@@ -299,4 +299,29 @@ var _ = Describe("Unmarshal flags", func() {
 		})
 
 	})
+
+	Context("when using boolean fields not marked optional", func() {
+		var context *cli.Context
+		BeforeEach(func() {
+			flags = []cli.Flag{
+				&cli.BoolFlag{Name: "bool-flag"},
+			}
+			context = pluginutil.NewContext([]string{"foo"}, flags)
+		})
+
+		type BoolTest struct {
+			BoolField bool
+		}
+
+		It("should not require the boolean flag to be present", func() {
+			bt := &BoolTest{}
+			Ω(pcli.UnmarshalFlags(bt, context)).Should(Succeed())
+		})
+
+		It("should properly default bool flags to false", func() {
+			bt := &BoolTest{BoolField: true}
+			Ω(pcli.UnmarshalFlags(bt, context)).Should(Succeed())
+			Ω(bt.BoolField).Should(BeFalse())
+		})
+	})
 })
