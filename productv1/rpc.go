@@ -87,3 +87,17 @@ func (p *RPCServer) GetProduct(args Args, resp *Response) error {
 	resp.ErrRes = ""
 	return nil
 }
+
+// GetMeta forwards the RPC request to the plugin's GetMeta method
+// and sends back the results.
+func (s *RPCServer) GetMeta(args interface{}, resp *Meta) error {
+	*resp = s.Impl.GetMeta()
+	return nil
+}
+
+// GetFlags forwards the RPC request to the plugin's GetFlags method
+// and sends back the results.
+func (s *RPCServer) GetFlags(args interface{}, resp *[]pcli.Flag) error {
+	*resp = s.Impl.GetFlags()
+	return nil
+}

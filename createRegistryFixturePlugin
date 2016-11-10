@@ -1,2 +1,4 @@
-go build -o registry/fixtures/cloudconfig/testplugin-${GOOS} cloudconfigv1/example/sample_cc.go && chmod +x registry/fixtures/cloudconfig/testplugin-${GOOS}
-go build -o registry/fixtures/product/testproductplugin-${GOOS} productv1/example/sample_product.go && chmod +x registry/fixtures/product/testproductplugin-${GOOS}
+GOOS=$(go env GOOS)
+
+go build -o registry/fixtures/cloudconfig/testplugin-${GOOS} cloudconfigv1/example/sample_cc.go
+go build -o registry/fixtures/product/testproductplugin-${GOOS} productv1/example/sample_product.go

@@ -45,8 +45,9 @@ func Run(p Deployer) {
 		plugin.Serve(&plugin.ServeConfig{
 			HandshakeConfig: HandshakeConfig,
 			Plugins: map[string]plugin.Plugin{
-				"product": NewProductPlugin(p),
+				PluginsMapHash: NewProductPlugin(p),
 			},
 		})
+		return
 	}
 }
