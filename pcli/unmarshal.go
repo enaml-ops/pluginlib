@@ -81,6 +81,14 @@ func unmarshal(structVal reflect.Value, typ reflect.Type, c *cli.Context) (missi
 	for i := 0; i < typ.NumField(); i++ {
 		field := typ.Field(i)
 
+		flagName := field.Tag.Get(omgTagName)
+		optional := false
+
+		// skip over fields tagged with "-"
+		if flagName == "-" {
+			continue
+		}
+
 		if field.Anonymous {
 			// recurse into embedded fields
 			var embeddedField reflect.Value
@@ -90,14 +98,6 @@ func unmarshal(structVal reflect.Value, typ reflect.Type, c *cli.Context) (missi
 				embeddedField = structVal.Field(i)
 			}
 			missingFlags = append(missingFlags, unmarshal(embeddedField, embeddedField.Type(), c)...)
-			continue
-		}
-
-		flagName := field.Tag.Get(omgTagName)
-		optional := false
-
-		// skip over fields tagged with "-"
-		if flagName == "-" {
 			continue
 		}
 

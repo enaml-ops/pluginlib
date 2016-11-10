@@ -120,6 +120,37 @@ var _ = Describe("Unmarshal flags", func() {
 			})
 		})
 
+		Context("when unmarshalling embedded POINTER fields", func() {
+			It("skips over such fields when tagged with '-'", func() {
+				type B struct {
+					IntFlag int
+				}
+				type A struct {
+					StringFlag string
+					*B         `omg:"-"`
+				}
+
+				var a A
+				Ω(pcli.UnmarshalFlags(&a, context)).Should(Succeed())
+			})
+
+			// unmarshalling into a pointer is currently unsupported
+			XIt("can actually unmarshal pointer fields", func() {
+				type B struct {
+					IntFlag int
+				}
+				type A struct {
+					StringFlag string
+					*B
+				}
+
+				var a A
+				Ω(pcli.UnmarshalFlags(&a, context)).Should(Succeed())
+				Ω(a.IntFlag).Should(Equal(42))
+				Ω(a.StringFlag).Should(Equal("mystring"))
+			})
+		})
+
 		Context("when unmarshalling embedded fields", func() {
 			type (
 				Slices struct {
