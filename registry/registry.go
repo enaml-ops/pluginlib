@@ -4,7 +4,7 @@ import (
 	"log"
 	"os/exec"
 
-	"github.com/enaml-ops/pluginlib/cloudconfig"
+	"github.com/enaml-ops/pluginlib/cloudconfigv1"
 	"github.com/enaml-ops/pluginlib/pcli"
 	"github.com/enaml-ops/pluginlib/productv1"
 	"github.com/hashicorp/go-plugin"
@@ -81,11 +81,11 @@ func RegisterCloudConfig(pluginpath string) ([]pcli.Flag, error) {
 	return ccPlugin.GetFlags(), nil
 }
 
-func GetCloudConfigReference(pluginpath string) (*plugin.Client, cloudconfig.CloudConfigDeployer) {
+func GetCloudConfigReference(pluginpath string) (*plugin.Client, cloudconfig.Deployer) {
 	client := plugin.NewClient(&plugin.ClientConfig{
 		HandshakeConfig: cloudconfig.HandshakeConfig,
 		Plugins: map[string]plugin.Plugin{
-			cloudconfig.PluginsMapHash: new(cloudconfig.CloudConfigPlugin),
+			cloudconfig.PluginsMapHash: new(cloudconfig.Plugin),
 		},
 		Cmd: exec.Command(pluginpath, "plugin"),
 	})
@@ -100,5 +100,5 @@ func GetCloudConfigReference(pluginpath string) (*plugin.Client, cloudconfig.Clo
 	if err != nil {
 		log.Fatal(err)
 	}
-	return client, raw.(cloudconfig.CloudConfigDeployer)
+	return client, raw.(cloudconfig.Deployer)
 }
