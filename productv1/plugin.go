@@ -33,7 +33,7 @@ const PluginsMapHash = "product"
 
 // HandshakeConfig is the configuration for establishing communication between the CLI plugins.
 var HandshakeConfig = plugin.HandshakeConfig{
-	ProtocolVersion:  1,
+	ProtocolVersion:  2,
 	MagicCookieKey:   "BASIC_PLUGIN",
 	MagicCookieValue: "hello",
 }
