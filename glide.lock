@@ -1,14 +1,8 @@
 hash: 468f5fcd5bf1e8f53d8b6a4ac6d58f7241d2a5791d54069a923563548fec0087
-updated: 2016-09-29T21:01:09.516775912-04:00
+updated: 2016-11-14T15:20:54.022244441-08:00
 imports:
 - name: github.com/enaml-ops/enaml
   version: 354a165b4ef98f0e154b6a0d8e8a54138abac102
-- name: github.com/enaml-ops/pluginlib
-  version: abb13473b33c76cbcde7a7532dc00dbc37561a89
-  subpackages:
-  - pcli
-  - cloudconfig
-  - product
 - name: github.com/golang/protobuf
   version: 87c000235d3d852c1628dc9490cd21ab36a7d69f
   subpackages:
@@ -18,9 +12,39 @@ imports:
 - name: github.com/hashicorp/yamux
   version: d1caa6c97c9fc1cc9e83bbe34d0603f9ff0ce8bd
 - name: github.com/onsi/ginkgo
-  version: 45a5f6ffb2a14e4f29698c16ae4c0a34018a8951
+  version: 00054c0bb96fc880d4e0be1b90937fad438c5290
+  subpackages:
+  - config
+  - internal/codelocation
+  - internal/containernode
+  - internal/failer
+  - internal/leafnodes
+  - internal/remote
+  - internal/spec
+  - internal/specrunner
+  - internal/suite
+  - internal/testingtproxy
+  - internal/writer
+  - reporters
+  - reporters/stenographer
+  - reporters/stenographer/support/go-colorable
+  - reporters/stenographer/support/go-isatty
+  - types
 - name: github.com/onsi/gomega
-  version: d59fa0ac68bb5dd932ee8d24eed631cdd519efc3
+  version: 2b6ed62707a2f5fdf1ba9cd856cdeec6bfff6b61
+  subpackages:
+  - format
+  - ghttp
+  - internal/assertion
+  - internal/asyncassertion
+  - internal/oraclematcher
+  - internal/testingtsupport
+  - matchers
+  - matchers/support/goraph/bipartitegraph
+  - matchers/support/goraph/edge
+  - matchers/support/goraph/node
+  - matchers/support/goraph/util
+  - types
 - name: github.com/op/go-logging
   version: 970db520ece77730c7e4724c61121037378659d9
 - name: github.com/square/certstrap
@@ -33,4 +57,8 @@ imports:
   version: c72728f42438425ffcd487986936357e17ebba3f
 - name: gopkg.in/yaml.v2
   version: a5b47d31c556af34a302ce5d659e6fea44d90de0
-devImports: []
+testImports:
+- name: golang.org/x/sys
+  version: c200b10b5d5e122be351b67af224adc6128af5bf
+  subpackages:
+  - unix
