@@ -134,6 +134,78 @@ var _ = Describe("given vault context", func() {
 			})
 		})
 
+		FContext("when unmarshalling [quoted] boolean flags", func() {
+			var server *ghttp.Server
+			var vault *VaultUnmarshal
+
+			BeforeEach(func() {
+				b, _ := ioutil.ReadFile("fixtures/bools_quoted.json")
+				server = ghttp.NewServer()
+				server.AppendHandlers(
+					ghttp.CombineHandlers(
+						ghttp.RespondWith(http.StatusOK, b),
+					),
+				)
+				vault = NewVaultUnmarshal(server.URL(), "lkjaslkdjflkasjdf")
+			})
+
+			AfterEach(func() {
+				server.Close()
+			})
+
+			It("should unmarshal boolean flags", func() {
+				flgs := []pcli.Flag{
+					pcli.CreateBoolFlag("bool-true", ""),
+					pcli.CreateBoolTFlag("boolt-true", ""),
+					pcli.CreateBoolFlag("bool-false", ""),
+					pcli.CreateBoolTFlag("boolt-false", ""),
+				}
+				Ω(vault.UnmarshalFlags("secret/move-along-nothing-to-see-here", flgs)).Should(Succeed())
+				ctx := NewContext([]string{"mycoolapp"}, ToCliFlagArray(flgs))
+
+				//Ω(ctx.Bool("bool-true")).Should(BeTrue())
+				Ω(ctx.Bool("boolt-true")).Should(BeTrue())
+				Ω(ctx.Bool("bool-false")).Should(BeFalse())
+				//	Ω(ctx.Bool("boolt-false")).Should(BeFalse())
+			})
+		})
+
+		FContext("when unmarshalling [unquoted] boolean flags", func() {
+			var server *ghttp.Server
+			var vault *VaultUnmarshal
+
+			BeforeEach(func() {
+				b, _ := ioutil.ReadFile("fixtures/bools.json")
+				server = ghttp.NewServer()
+				server.AppendHandlers(
+					ghttp.CombineHandlers(
+						ghttp.RespondWith(http.StatusOK, b),
+					),
+				)
+				vault = NewVaultUnmarshal(server.URL(), "lkjaslkdjflkasjdf")
+			})
+
+			AfterEach(func() {
+				server.Close()
+			})
+
+			It("should unmarshal boolean flags", func() {
+				flgs := []pcli.Flag{
+					pcli.CreateBoolFlag("bool-true", ""),
+					pcli.CreateBoolTFlag("boolt-true", ""),
+					pcli.CreateBoolFlag("bool-false", ""),
+					pcli.CreateBoolTFlag("boolt-false", ""),
+				}
+				Ω(vault.UnmarshalFlags("secret/move-along-nothing-to-see-here", flgs)).Should(Succeed())
+				ctx := NewContext([]string{"mycoolapp"}, ToCliFlagArray(flgs))
+
+				//	Ω(ctx.Bool("bool-true")).Should(BeTrue())
+				Ω(ctx.Bool("boolt-true")).Should(BeTrue())
+				Ω(ctx.Bool("bool-false")).Should(BeFalse())
+				//	Ω(ctx.Bool("boolt-false")).Should(BeFalse())
+			})
+		})
+
 		Context("when unmarshalling string slice flags", func() {
 			var server *ghttp.Server
 			var vault *VaultUnmarshal

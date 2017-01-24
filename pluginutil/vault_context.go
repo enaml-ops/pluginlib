@@ -31,12 +31,12 @@ type VaultUnmarshal struct {
 }
 
 type vaultJsonObject struct {
-	LeaseID       string            `json:"lease_id"`
-	Renewable     bool              `json:"renewable"`
-	LeaseDuration float64           `json:"lease_duration"`
-	Data          map[string]string `json:"data"`
-	Warnings      interface{}       `json:"warnings"`
-	Auth          interface{}       `json:"auth"`
+	LeaseID       string                 `json:"lease_id"`
+	Renewable     bool                   `json:"renewable"`
+	LeaseDuration float64                `json:"lease_duration"`
+	Data          map[string]interface{} `json:"data"`
+	Warnings      interface{}            `json:"warnings"`
+	Auth          interface{}            `json:"auth"`
 }
 
 func (s *VaultUnmarshal) RotateSecrets(hash string, secrets interface{}) error {
@@ -55,8 +55,12 @@ func (s *VaultUnmarshal) UnmarshalFlags(hash string, flgs []pcli.Flag) error {
 	for i := range flgs {
 		flagName := flgs[i].Name
 		if vaultValue, ok := vaultObj.Data[flagName]; ok {
-			flgs[i].Value = vaultValue
-			lo.G.Debugf("set %s flag from vault (value=%s)", flagName, vaultValue)
+			if s, ok := vaultValue.(string); ok {
+				flgs[i].Value = s
+			} else {
+				flgs[i].Value = fmt.Sprintf("%v", vaultValue)
+			}
+			lo.G.Debugf("set %s flag from vault (value=%s)", flagName, flgs[i].Value)
 		}
 	}
 	return nil
@@ -80,7 +84,11 @@ func (s *VaultUnmarshal) UnmarshalSomeFlags(hash string, flags []pcli.Flag, flag
 		_, shouldUnmarshal := flagsToUnmarshal[name]
 		vaultValue, inVault := vaultObj.Data[name]
 		if shouldUnmarshal && inVault {
-			flags[i].Value = vaultValue
+			if s, ok := vaultValue.(string); ok {
+				flags[i].Value = s
+			} else {
+				flags[i].Value = fmt.Sprintf("%v", vaultValue)
+			}
 			lo.G.Debugf("set %s flag from vault (value=%s)", name, vaultValue)
 		}
 	}
