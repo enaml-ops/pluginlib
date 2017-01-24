@@ -127,6 +127,7 @@ func BoolFlagToCli(s Flag) interface{} {
 	return &cli.BoolFlag{
 		Name:    s.Name,
 		EnvVars: []string{s.EnvVar},
+		Value:   s.Value == "true",
 		Usage:   s.Usage,
 	}
 }
@@ -143,7 +144,7 @@ func IntFlagToCli(s Flag) interface{} {
 
 func BoolTFlagToCli(s Flag) interface{} {
 	return &cli.BoolFlag{
-		Value:   true,
+		Value:   s.Value != "false",
 		Name:    s.Name,
 		EnvVars: []string{s.EnvVar},
 		Usage:   s.Usage,

@@ -134,7 +134,7 @@ var _ = Describe("given vault context", func() {
 			})
 		})
 
-		FContext("when unmarshalling [quoted] boolean flags", func() {
+		Context("when unmarshalling [quoted] boolean flags", func() {
 			var server *ghttp.Server
 			var vault *VaultUnmarshal
 
@@ -163,14 +163,14 @@ var _ = Describe("given vault context", func() {
 				Ω(vault.UnmarshalFlags("secret/move-along-nothing-to-see-here", flgs)).Should(Succeed())
 				ctx := NewContext([]string{"mycoolapp"}, ToCliFlagArray(flgs))
 
-				//Ω(ctx.Bool("bool-true")).Should(BeTrue())
+				Ω(ctx.Bool("bool-true")).Should(BeTrue())
 				Ω(ctx.Bool("boolt-true")).Should(BeTrue())
 				Ω(ctx.Bool("bool-false")).Should(BeFalse())
-				//	Ω(ctx.Bool("boolt-false")).Should(BeFalse())
+				Ω(ctx.Bool("boolt-false")).Should(BeFalse())
 			})
 		})
 
-		FContext("when unmarshalling [unquoted] boolean flags", func() {
+		Context("when unmarshalling [unquoted] boolean flags", func() {
 			var server *ghttp.Server
 			var vault *VaultUnmarshal
 
@@ -199,10 +199,10 @@ var _ = Describe("given vault context", func() {
 				Ω(vault.UnmarshalFlags("secret/move-along-nothing-to-see-here", flgs)).Should(Succeed())
 				ctx := NewContext([]string{"mycoolapp"}, ToCliFlagArray(flgs))
 
-				//	Ω(ctx.Bool("bool-true")).Should(BeTrue())
+				Ω(ctx.Bool("bool-true")).Should(BeTrue())
 				Ω(ctx.Bool("boolt-true")).Should(BeTrue())
 				Ω(ctx.Bool("bool-false")).Should(BeFalse())
-				//	Ω(ctx.Bool("boolt-false")).Should(BeFalse())
+				Ω(ctx.Bool("boolt-false")).Should(BeFalse())
 			})
 		})
 
